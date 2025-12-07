@@ -1,0 +1,68 @@
+<%# app/views/shared/_flash.html.erb %>
+<%# フラッシュメッセージを表示するパーシャル %>
+<%# notice（成功）、alert（警告/エラー）などのメッセージタイプに対応 %>
+
+<div class="flash-messages" role="alert" aria-live="polite">
+  <% flash.each do |type, message| %>
+    <%# メッセージタイプに応じたCSSクラスを設定 %>
+    <% css_class = case type.to_sym
+                   when :notice, :success
+                     'flash-success'
+                   when :alert, :error
+                     'flash-error'
+                   when :warning
+                     'flash-warning'
+                   when :info
+                     'flash-info'
+                   else
+                     'flash-default'
+                   end %>
+    
+    <%# アイコンを設定 %>
+    <% icon = case type.to_sym
+              when :notice, :success
+                '✓'
+              when :alert, :error
+                '✕'
+              when :warning
+                '⚠'
+              when :info
+                'ℹ'
+              else
+                '●'
+              end %>
+    
+    <div class="flash-message <%= css_class %>" 
+         data-controller="flash"
+         data-flash-auto-dismiss-value="true"
+         data-flash-dismiss-after-value="5000">
+      <%# アイコン %>
+      <span class="flash-icon" aria-hidden="true"><%= icon %></span>
+      
+      <%# メッセージ内容 %>
+      <span class="flash-content">
+        <% if message.is_a?(Array) %>
+          <%# 複数のメッセージがある場合はリストで表示 %>
+          <ul class="flash-list">
+            <% message.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        <% else %>
+          <%= message %>
+        <% end %>
+      </span>
+      
+      <%# 閉じるボタン %>
+      <button type="button" 
+              class="flash-close" 
+              data-action="click->flash#dismiss"
+              aria-label="Close message">
+        <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  <% end %>
+</div>
+

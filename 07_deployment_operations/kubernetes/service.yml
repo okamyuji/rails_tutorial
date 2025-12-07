@@ -1,0 +1,90 @@
+# Kubernetes Service for Rails Application
+# kubectl apply -f service.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rails-app
+  labels:
+    app: rails-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: rails-app
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+    protocol: TCP
+
+---
+# ClusterIP Service (internal only)
+apiVersion: v1
+kind: Service
+metadata:
+  name: rails-app-internal
+  labels:
+    app: rails-app
+spec:
+  type: ClusterIP
+  selector:
+    app: rails-app
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+
+---
+# Ingress (with TLS)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rails-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - your-domain.com
+    secretName: rails-app-tls
+  rules:
+  - host: your-domain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rails-app
+            port:
+              number: 80
+
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rails-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rails-app
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+

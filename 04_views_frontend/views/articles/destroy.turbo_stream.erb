@@ -1,0 +1,22 @@
+<%# app/views/articles/destroy.turbo_stream.erb %>
+<%# 記事削除成功時のTurbo Streamレスポンス %>
+
+<%# 記事を削除（DOMから要素を削除） %>
+<%= turbo_stream.remove @article %>
+
+<%# 記事数を更新 %>
+<%= turbo_stream.update "article_count" do %>
+  <%= Article.count %>
+<% end %>
+
+<%# フラッシュメッセージを表示 %>
+<%= turbo_stream.prepend "flash_messages" do %>
+  <div class="flash-message flash-warning" 
+       data-controller="flash"
+       data-flash-auto-dismiss-value="true">
+    <span class="flash-icon">⚠</span>
+    <span class="flash-content">Article was successfully deleted.</span>
+    <button type="button" class="flash-close" data-action="click->flash#dismiss">×</button>
+  </div>
+<% end %>
+

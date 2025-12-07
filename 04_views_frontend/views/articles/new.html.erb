@@ -1,0 +1,36 @@
+<%# app/views/articles/new.html.erb %>
+<%# 記事作成ページ %>
+
+<%# ページタイトルを設定 %>
+<% content_for :title do %>
+  <%= page_title("New Article") %>
+<% end %>
+
+<%# ブレッドクラム %>
+<% content_for :breadcrumbs do %>
+  <ol class="breadcrumb-list">
+    <li class="breadcrumb-item">
+      <%= link_to "Home", root_path %>
+    </li>
+    <li class="breadcrumb-item">
+      <%= link_to "Articles", articles_path %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      New Article
+    </li>
+  </ol>
+<% end %>
+
+<div class="article-new">
+  <header class="page-header">
+    <h1 class="page-title">Create New Article</h1>
+    <p class="page-description">
+      Share your thoughts and ideas with the world
+    </p>
+  </header>
+  
+  <div class="form-container">
+    <%= render "form", article: @article %>
+  </div>
+</div>
+

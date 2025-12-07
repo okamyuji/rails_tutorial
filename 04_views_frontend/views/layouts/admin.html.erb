@@ -1,0 +1,39 @@
+<%# app/views/layouts/admin.html.erb %>
+<%# 管理画面用のレイアウト %>
+<%# applicationレイアウトを継承しつつ、管理画面固有の構造を追加します %>
+
+<%# content_forを使用してapplicationレイアウトにコンテンツを注入 %>
+<% content_for :content do %>
+  <div class="admin-layout">
+    <%# サイドバー %>
+    <aside class="admin-sidebar" role="navigation" aria-label="Admin navigation">
+      <%= render "admin/sidebar" %>
+    </aside>
+    
+    <%# メインコンテンツエリア %>
+    <div class="admin-main">
+      <%# 管理画面ヘッダー %>
+      <header class="admin-header">
+        <h1 class="admin-title">
+          <%= content_for?(:admin_title) ? yield(:admin_title) : "Dashboard" %>
+        </h1>
+        
+        <%# アクションボタン（個別ページから注入可能） %>
+        <% if content_for?(:admin_actions) %>
+          <div class="admin-actions">
+            <%= yield :admin_actions %>
+          </div>
+        <% end %>
+      </header>
+      
+      <%# コンテンツ %>
+      <div class="admin-content">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%# applicationレイアウトをレンダリング %>
+<%= render template: "layouts/application" %>
+

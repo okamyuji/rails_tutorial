@@ -1,0 +1,65 @@
+<%# app/views/layouts/application.html.erb %>
+<%# アプリケーション全体の共通レイアウトを定義します %>
+<%# すべてのビューはこのレイアウトを継承します %>
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <%# ページタイトル - content_forで個別ページから設定可能 %>
+  <title><%= content_for?(:title) ? yield(:title) : page_title %></title>
+  
+  <%# CSRF対策のメタタグ %>
+  <%= csrf_meta_tags %>
+  
+  <%# Content Security Policy %>
+  <%= csp_meta_tag %>
+  
+  <%# スタイルシート %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  
+  <%# JavaScript（Importmap） %>
+  <%= javascript_importmap_tags %>
+  
+  <%# 追加のヘッダーコンテンツ（個別ページから注入可能） %>
+  <%= yield :head %>
+</head>
+
+<body class="<%= controller_name %> <%= action_name %>">
+  <%# スキップリンク（アクセシビリティ） %>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <%# ヘッダー %>
+  <%= render "shared/header" %>
+  
+  <%# フラッシュメッセージ %>
+  <% if flash.any? %>
+    <%= render "shared/flash" %>
+  <% end %>
+  
+  <%# メインコンテンツ %>
+  <main id="main-content" class="container" role="main">
+    <%# ブレッドクラム（個別ページから注入可能） %>
+    <% if content_for?(:breadcrumbs) %>
+      <nav aria-label="Breadcrumb" class="breadcrumbs">
+        <%= yield :breadcrumbs %>
+      </nav>
+    <% end %>
+    
+    <%# ページ固有のコンテンツ %>
+    <%= yield %>
+  </main>
+  
+  <%# フッター %>
+  <%= render "shared/footer" %>
+  
+  <%# モーダル用のコンテナ（Turbo Frames用） %>
+  <%= turbo_frame_tag "modal" %>
+  
+  <%# 追加のスクリプト（個別ページから注入可能） %>
+  <%= yield :scripts %>
+</body>
+</html>
+

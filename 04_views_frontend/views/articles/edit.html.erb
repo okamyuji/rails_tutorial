@@ -1,0 +1,39 @@
+<%# app/views/articles/edit.html.erb %>
+<%# 記事編集ページ %>
+
+<%# ページタイトルを設定 %>
+<% content_for :title do %>
+  <%= page_title("Edit: #{@article.title}") %>
+<% end %>
+
+<%# ブレッドクラム %>
+<% content_for :breadcrumbs do %>
+  <ol class="breadcrumb-list">
+    <li class="breadcrumb-item">
+      <%= link_to "Home", root_path %>
+    </li>
+    <li class="breadcrumb-item">
+      <%= link_to "Articles", articles_path %>
+    </li>
+    <li class="breadcrumb-item">
+      <%= link_to @article.title, article_path(@article) %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Edit
+    </li>
+  </ol>
+<% end %>
+
+<div class="article-edit">
+  <header class="page-header">
+    <h1 class="page-title">Edit Article</h1>
+    <p class="page-description">
+      Update your article content
+    </p>
+  </header>
+  
+  <div class="form-container">
+    <%= render "form", article: @article %>
+  </div>
+</div>
+

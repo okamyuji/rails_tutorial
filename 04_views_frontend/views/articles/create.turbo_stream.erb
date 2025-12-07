@@ -1,0 +1,30 @@
+<%# app/views/articles/create.turbo_stream.erb %>
+<%# 記事作成成功時のTurbo Streamレスポンス %>
+<%# 複数の要素を同時に更新します %>
+
+<%# 記事一覧の先頭に新しい記事を追加 %>
+<%= turbo_stream.prepend "articles" do %>
+  <%= render @article %>
+<% end %>
+
+<%# 記事数を更新 %>
+<%= turbo_stream.update "article_count" do %>
+  <%= Article.count %>
+<% end %>
+
+<%# フォームをリセット（新しい空のフォームに置き換え） %>
+<%= turbo_stream.replace "new_article_form" do %>
+  <%= render "form", article: Article.new %>
+<% end %>
+
+<%# フラッシュメッセージを表示 %>
+<%= turbo_stream.prepend "flash_messages" do %>
+  <div class="flash-message flash-success" 
+       data-controller="flash"
+       data-flash-auto-dismiss-value="true">
+    <span class="flash-icon">✓</span>
+    <span class="flash-content">Article was successfully created.</span>
+    <button type="button" class="flash-close" data-action="click->flash#dismiss">×</button>
+  </div>
+<% end %>
+

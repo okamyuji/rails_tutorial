@@ -1,0 +1,145 @@
+# Kubernetes Deployment for Rails Application
+# kubectl apply -f deployment.yml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rails-app
+  labels:
+    app: rails-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rails-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: rails-app
+    spec:
+      containers:
+      - name: rails
+        image: your-registry/rails-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        
+        # Environment variables
+        env:
+        - name: RAILS_ENV
+          value: production
+        - name: RAILS_LOG_TO_STDOUT
+          value: "true"
+        - name: RAILS_SERVE_STATIC_FILES
+          value: "true"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: database-url
+        - name: RAILS_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: master-key
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: redis-url
+        
+        # Resource limits
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        
+        # Health checks
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        # Lifecycle hooks
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]
+      
+      # Graceful shutdown
+      terminationGracePeriodSeconds: 30
+      
+      # Image pull secrets (if using private registry)
+      # imagePullSecrets:
+      # - name: registry-credentials
+
+---
+# Sidekiq Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rails-sidekiq
+  labels:
+    app: rails-sidekiq
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rails-sidekiq
+  template:
+    metadata:
+      labels:
+        app: rails-sidekiq
+    spec:
+      containers:
+      - name: sidekiq
+        image: your-registry/rails-app:latest
+        command: ["bundle", "exec", "sidekiq"]
+        env:
+        - name: RAILS_ENV
+          value: production
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: database-url
+        - name: RAILS_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: master-key
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: rails-secrets
+              key: redis-url
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+

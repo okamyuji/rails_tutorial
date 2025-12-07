@@ -1,0 +1,19 @@
+<%# app/views/articles/update.turbo_stream.erb %>
+<%# 記事更新成功時のTurbo Streamレスポンス %>
+
+<%# 記事を更新（既存の記事を新しい内容で置き換え） %>
+<%= turbo_stream.replace @article do %>
+  <%= render @article %>
+<% end %>
+
+<%# フラッシュメッセージを表示 %>
+<%= turbo_stream.prepend "flash_messages" do %>
+  <div class="flash-message flash-success" 
+       data-controller="flash"
+       data-flash-auto-dismiss-value="true">
+    <span class="flash-icon">✓</span>
+    <span class="flash-content">Article was successfully updated.</span>
+    <button type="button" class="flash-close" data-action="click->flash#dismiss">×</button>
+  </div>
+<% end %>
+

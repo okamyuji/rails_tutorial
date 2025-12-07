@@ -1,0 +1,162 @@
+<%# app/views/articles/_form.html.erb %>
+<%# 記事作成・編集フォームパーシャル %>
+<%# ローカル変数: article（必須）、url（オプション） %>
+
+<%#
+  使用例:
+  <%= render "form", article: @article %>
+  <%= render partial: "articles/form", locals: { article: @article, url: articles_path } %>
+%>
+
+<%= form_with model: article, 
+              local: true,
+              class: "article-form",
+              data: { controller: "form", turbo: true } do |f| %>
+  
+  <%# エラーメッセージ %>
+  <%= error_messages_for(article) %>
+  
+  <%# タイトル %>
+  <div class="form-group <%= field_error_class(article, :title) %>">
+    <%= f.label :title, class: "form-label required" %>
+    <%= f.text_field :title, 
+                     class: "form-control",
+                     placeholder: "Enter article title",
+                     required: true,
+                     maxlength: 200,
+                     autofocus: article.new_record?,
+                     aria: { describedby: "title-help" } %>
+    <small id="title-help" class="form-text">5〜200文字で入力してください</small>
+    <%= field_error_message(article, :title) %>
+  </div>
+  
+  <%# 本文 %>
+  <div class="form-group <%= field_error_class(article, :content) %>">
+    <%= f.label :content, class: "form-label required" %>
+    <%= f.text_area :content, 
+                    class: "form-control",
+                    rows: 10,
+                    placeholder: "Write your article content here...",
+                    required: true,
+                    aria: { describedby: "content-help" } %>
+    <small id="content-help" class="form-text">10文字以上で入力してください</small>
+    <%= field_error_message(article, :content) %>
+  </div>
+  
+  <%# 公開設定 %>
+  <fieldset class="form-group">
+    <legend class="form-label">Publication Status</legend>
+    
+    <div class="form-check">
+      <%= f.radio_button :published, false, 
+                         class: "form-check-input",
+                         id: "article_published_false" %>
+      <%= f.label :published, "Draft", 
+                  for: "article_published_false",
+                  class: "form-check-label" %>
+      <small class="form-text">Save as draft (not visible to public)</small>
+    </div>
+    
+    <div class="form-check">
+      <%= f.radio_button :published, true, 
+                         class: "form-check-input",
+                         id: "article_published_true" %>
+      <%= f.label :published, "Published", 
+                  for: "article_published_true",
+                  class: "form-check-label" %>
+      <small class="form-text">Publish immediately</small>
+    </div>
+  </fieldset>
+  
+  <%# ネストした属性（画像） - accepts_nested_attributes_for用 %>
+  <% if article.respond_to?(:images) %>
+    <fieldset class="form-group nested-form" 
+              data-controller="form"
+              data-form-max-items-value="5"
+              data-form-min-items-value="0">
+      <legend class="form-label">Images</legend>
+      
+      <%# 新規画像追加用テンプレート %>
+      <template data-form-target="template">
+        <div class="nested-fields" data-form-target="item">
+          <div class="nested-fields-row">
+            <div class="form-group">
+              <label class="form-label">Image URL</label>
+              <input type="text" 
+                     name="article[images_attributes][NEW_RECORD][url]"
+                     class="form-control"
+                     placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Caption</label>
+              <input type="text" 
+                     name="article[images_attributes][NEW_RECORD][caption]"
+                     class="form-control"
+                     placeholder="Image description">
+            </div>
+            <input type="hidden" 
+                   name="article[images_attributes][NEW_RECORD][_destroy]" 
+                   value="0">
+            <button type="button" 
+                    class="btn btn-danger btn-sm"
+                    data-action="click->form#remove">
+              Remove
+            </button>
+          </div>
+        </div>
+      </template>
+      
+      <%# 既存の画像 %>
+      <div data-form-target="container">
+        <%= f.fields_for :images do |image_form| %>
+          <div class="nested-fields" data-form-target="item">
+            <div class="nested-fields-row">
+              <div class="form-group">
+                <%= image_form.label :url, "Image URL", class: "form-label" %>
+                <%= image_form.text_field :url, class: "form-control" %>
+              </div>
+              <div class="form-group">
+                <%= image_form.label :caption, class: "form-label" %>
+                <%= image_form.text_field :caption, class: "form-control" %>
+              </div>
+              <%= image_form.hidden_field :_destroy %>
+              <button type="button" 
+                      class="btn btn-danger btn-sm"
+                      data-action="click->form#remove">
+                Remove
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      
+      <%# 画像追加ボタン %>
+      <button type="button" 
+              class="btn btn-secondary btn-sm"
+              data-action="click->form#add">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Add Image
+      </button>
+      <span class="form-text">Images: <span data-form-target="counter">0</span> / 5</span>
+    </fieldset>
+  <% end %>
+  
+  <%# 送信ボタン %>
+  <div class="form-actions">
+    <%= f.submit article.new_record? ? "Create Article" : "Update Article",
+                 class: "btn btn-primary btn-lg",
+                 data: { disable_with: "Saving..." } %>
+    
+    <%= link_to "Cancel", articles_path, class: "btn btn-outline btn-lg" %>
+    
+    <% unless article.new_record? %>
+      <%= button_to "Delete", article_path(article),
+                    method: :delete,
+                    form: { data: { turbo_confirm: "Are you sure?" } },
+                    class: "btn btn-danger btn-lg" %>
+    <% end %>
+  </div>
+<% end %>
+

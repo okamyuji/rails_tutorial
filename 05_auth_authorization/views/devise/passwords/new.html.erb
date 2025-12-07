@@ -1,0 +1,44 @@
+<%# app/views/devise/passwords/new.html.erb %>
+<%# パスワードリセット要求フォーム %>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <header class="auth-header">
+      <h1 class="auth-title">Forgot Password?</h1>
+      <p class="auth-subtitle">
+        No worries! Enter your email address and we'll send you a link to reset your password.
+      </p>
+    </header>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "auth-form" }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="form-group">
+        <%= f.label :email, class: "form-label" %>
+        <%= f.email_field :email,
+                          autofocus: true,
+                          autocomplete: "email",
+                          class: "form-control",
+                          placeholder: "Enter your email address" %>
+      </div>
+
+      <div class="form-actions">
+        <%= f.submit "Send Reset Instructions", class: "btn btn-primary btn-block" %>
+      </div>
+    <% end %>
+
+    <footer class="auth-footer">
+      <p>
+        Remember your password?
+        <%= link_to "Sign in", new_session_path(resource_name), class: "auth-link" %>
+      </p>
+      <% if devise_mapping.registerable? %>
+        <p>
+          Don't have an account?
+          <%= link_to "Sign up", new_registration_path(resource_name), class: "auth-link" %>
+        </p>
+      <% end %>
+    </footer>
+  </div>
+</div>
+

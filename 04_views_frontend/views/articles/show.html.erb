@@ -1,0 +1,121 @@
+<%# app/views/articles/show.html.erb %>
+<%# 記事詳細ページ %>
+
+<%# ページタイトルを設定 %>
+<% content_for :title do %>
+  <%= page_title(@article.title) %>
+<% end %>
+
+<%# ブレッドクラム %>
+<% content_for :breadcrumbs do %>
+  <ol class="breadcrumb-list">
+    <li class="breadcrumb-item">
+      <%= link_to "Home", root_path %>
+    </li>
+    <li class="breadcrumb-item">
+      <%= link_to "Articles", articles_path %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <%= truncate(@article.title, length: 30) %>
+    </li>
+  </ol>
+<% end %>
+
+<div class="article-show">
+  <article class="article-detail">
+    <%# 記事ヘッダー %>
+    <header class="article-header">
+      <h1 class="article-title"><%= @article.title %></h1>
+      
+      <div class="article-meta">
+        <%# 著者情報 %>
+        <div class="author-info">
+          <div class="author-avatar">
+            <%= @article.user.name.first.upcase %>
+          </div>
+          <div class="author-details">
+            <span class="author-name"><%= @article.user.name %></span>
+            <time class="article-date" datetime="<%= @article.created_at.iso8601 %>">
+              <%= @article.created_at.strftime('%B %d, %Y at %H:%M') %>
+            </time>
+          </div>
+        </div>
+        
+        <%# ステータスバッジ %>
+        <% if @article.published? %>
+          <span class="badge badge-success">Published</span>
+        <% else %>
+          <span class="badge badge-secondary">Draft</span>
+        <% end %>
+      </div>
+    </header>
+    
+    <%# 記事本文 %>
+    <div class="article-content prose">
+      <%= simple_format(@article.content) %>
+    </div>
+    
+    <%# 記事フッター %>
+    <footer class="article-footer">
+      <div class="article-actions">
+        <%= link_to edit_article_path(@article), class: "btn btn-secondary" do %>
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          Edit Article
+        <% end %>
+        
+        <%= link_to articles_path, class: "btn btn-outline" do %>
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Articles
+        <% end %>
+      </div>
+    </footer>
+  </article>
+  
+  <%# コメントセクション（Turbo Frame） %>
+  <%= turbo_frame_tag "comments" do %>
+    <section class="comments-section">
+      <header class="comments-header">
+        <h2 class="comments-title">
+          Comments
+          <span class="comments-count">(<%= @article.comments.count %>)</span>
+        </h2>
+      </header>
+      
+      <%# コメントフォーム %>
+      <div class="comment-form-container">
+        <%= form_with model: [@article, Comment.new], 
+                      class: "comment-form",
+                      data: { turbo_frame: "comments" } do |f| %>
+          <div class="form-group">
+            <%= f.label :content, "Add a comment", class: "form-label sr-only" %>
+            <%= f.text_area :content, 
+                            class: "form-control",
+                            rows: 3,
+                            placeholder: "Write your comment here...",
+                            required: true %>
+          </div>
+          <div class="form-actions">
+            <%= f.submit "Post Comment", 
+                         class: "btn btn-primary",
+                         data: { disable_with: "Posting..." } %>
+          </div>
+        <% end %>
+      </div>
+      
+      <%# コメント一覧 %>
+      <div class="comments-list">
+        <% if @article.comments.any? %>
+          <%= render @article.comments.includes(:user).order(created_at: :desc) %>
+        <% else %>
+          <p class="no-comments">No comments yet. Be the first to comment!</p>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>
+

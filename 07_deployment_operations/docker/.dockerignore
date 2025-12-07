@@ -1,0 +1,56 @@
+# Git
+.git
+.gitignore
+
+# Logs
+log/*
+tmp/*
+
+# Test files
+spec/
+test/
+coverage/
+
+# Development files
+.env*
+.rspec
+.rubocop.yml
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules
+node_modules/
+
+# Documentation
+README.md
+docs/
+
+# Docker files
+docker-compose*.yml
+Dockerfile*
+
+# CI/CD
+.github/
+.circleci/
+.gitlab-ci.yml
+
+# Storage (use external storage in production)
+storage/*
+!storage/.keep
+
+# Compiled assets (will be generated during build)
+public/assets/
+public/packs/
+
+# Credentials (use environment variables)
+config/master.key
+config/credentials/*.key
+
