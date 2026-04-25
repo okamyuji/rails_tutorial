@@ -130,7 +130,7 @@ puts ""
 
 migration_example = <<~RUBY
   # db/migrate/XXXXXX_devise_create_users.rb
-  class DeviseCreateUsers < ActiveRecord::Migration[7.2]
+  class DeviseCreateUsers < ActiveRecord::Migration[8.0]
     def change
       create_table :users do |t|
         ## Database authenticatable

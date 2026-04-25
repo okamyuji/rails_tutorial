@@ -5,7 +5,7 @@
 ## 前提条件
 
 - Ruby 3.2以上
-- Rails 7.2以上
+- Rails 8.0以上
 - Node.js（Importmap使用時は不要）
 
 ## ディレクトリ構造

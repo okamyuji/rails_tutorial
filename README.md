@@ -31,14 +31,14 @@
 ## 前提条件
 
 - Ruby 3.2以上
-- Rails 7.2以上
+- Rails 8.0以上
 - PostgreSQL（第2章以降）
 - Git
 
 Railsをインストールするには、以下のコマンドを実行します。
 
 ```bash
-gem install rails -v '~> 7.2.0'
+gem install rails -v '~> 8.0.0'
 ```
 
 ## 学習の進め方

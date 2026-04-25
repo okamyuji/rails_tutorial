@@ -3,7 +3,7 @@
 # このマイグレーションは、既存のテーブルにインデックスを追加する例です。
 # パフォーマンス最適化のために、頻繁に検索されるカラムにインデックスを追加します。
 
-class AddIndexesExample < ActiveRecord::Migration[7.2]
+class AddIndexesExample < ActiveRecord::Migration[8.0]
   def change
     # 単一カラムのインデックス
     # published_at カラムにインデックスを追加

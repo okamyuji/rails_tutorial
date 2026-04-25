@@ -68,7 +68,7 @@ article_templates = [
     Getting started is easy. Simply install Ruby, then install Rails with `gem install rails`.
     Create a new application with `rails new myapp` and you're ready to go!
   CONTENT
-  { title: "Understanding Turbo in Rails 7", content: <<~CONTENT },
+  { title: "Understanding Turbo in Rails 8", content: <<~CONTENT },
     Turbo is a collection of techniques for creating fast, modern web applications without writing much JavaScript.
 
     Turbo consists of three main components:

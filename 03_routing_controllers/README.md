@@ -5,7 +5,7 @@
 ## 前提条件
 
 - Ruby 3.2以上
-- Rails 7.2以上
+- Rails 8.0以上
 - 第2章で学んだActiveRecordの知識
 
 ## 実装の進め方

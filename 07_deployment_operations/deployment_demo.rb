@@ -75,7 +75,7 @@ migration_info = <<~TEXT
 
   ■ インデックスの追加（PostgreSQL）
 
-  class AddIndexToUsersEmail < ActiveRecord::Migration[7.2]
+  class AddIndexToUsersEmail < ActiveRecord::Migration[8.0]
     disable_ddl_transaction!
   #{"  "}
     def change

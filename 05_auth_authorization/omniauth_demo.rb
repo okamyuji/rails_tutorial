@@ -366,7 +366,7 @@ puts ""
 
 migration = <<~RUBY
   # db/migrate/XXXXXX_add_omniauth_to_users.rb
-  class AddOmniauthToUsers < ActiveRecord::Migration[7.2]
+  class AddOmniauthToUsers < ActiveRecord::Migration[8.0]
     def change
       add_column :users, :provider, :string
       add_column :users, :uid, :string

@@ -3,7 +3,7 @@
 # このマイグレーションは、外部キー制約を追加する例です。
 # データベースレベルでデータ整合性を保証します。
 
-class AddForeignKeysExample < ActiveRecord::Migration[7.2]
+class AddForeignKeysExample < ActiveRecord::Migration[8.0]
   def change
     # 基本的な外部キー制約
     # articles テーブルの user_id が users テーブルの id を参照することを保証

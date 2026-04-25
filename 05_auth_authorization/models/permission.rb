@@ -128,7 +128,7 @@ end
 
 # マイグレーション例:
 #
-# class CreatePermissions < ActiveRecord::Migration[7.2]
+# class CreatePermissions < ActiveRecord::Migration[8.0]
 #   def change
 #     create_table :permissions do |t|
 #       t.references :user, null: false, foreign_key: true

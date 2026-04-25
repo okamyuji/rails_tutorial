@@ -5,7 +5,7 @@
 ## 前提条件
 
 - Ruby 3.2以上
-- Rails 7.2以上
+- Rails 8.0以上
 - PostgreSQLまたはSQLite3
 
 ## 実装の進め方
