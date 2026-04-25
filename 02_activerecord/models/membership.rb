@@ -8,7 +8,7 @@ class Membership < ApplicationRecord
   # 関連付け
   # メンバーシップは1人のユーザーに属します
   belongs_to :user
-  
+
   # メンバーシップは1つのグループに属します
   belongs_to :group
 
@@ -18,22 +18,25 @@ class Membership < ApplicationRecord
 
   # バリデーション
   # 同じユーザーが同じグループに複数回参加できないようにする
-  validates :user_id, uniqueness: { scope: :group_id, 
-                                     message: 'is already a member of this group' }
-  
+  validates :user_id,
+            uniqueness: {
+              scope: :group_id,
+              message: "is already a member of this group"
+            }
+
   # 役割は必須
   validates :role, presence: true
 
   # スコープ
   # 管理者のみを取得
   scope :admins, -> { where(role: :admin) }
-  
+
   # モデレーターのみを取得
   scope :moderators, -> { where(role: :moderator) }
-  
+
   # 通常メンバーのみを取得
   scope :members, -> { where(role: :member) }
-  
+
   # 新しい順に並べ替え
   scope :recent, -> { order(created_at: :desc) }
 
@@ -67,7 +70,7 @@ class Membership < ApplicationRecord
   # 権限レベルの文字列表現
   def role_name
     I18n.t("activerecord.attributes.membership.roles.#{role}")
-  rescue
+  rescue StandardError
     role.humanize
   end
 end

@@ -140,6 +140,15 @@ Bullet.alert = true
 gem 'rack-mini-profiler'
 ```
 
+### 5. CIで自動失敗させる仕組み
+
+開発時の警告に頼らず、N+1とカバレッジ低下をテスト実行で自動検出します。
+
+- `config/bullet.rb` のテスト環境設定で `Bullet.raise = true` を有効化
+- `config/simplecov.rb` で `minimum_coverage 80` / `refuse_coverage_drop` を設定
+- どちらも閾値違反時にRSpecが非0 exitとなりCIが失敗する
+- 詳細は[第7章のCI設定](../07_deployment_operations/github_actions/ci.yml)を参照
+
 ## テストの実行
 
 ```bash
@@ -170,10 +179,11 @@ bundle exec rspec --tag focus
 1. **ビジネスロジック優先** - 重要な機能を優先的にテスト
 2. **エッジケース** - 境界値や異常系をテスト
 3. **100%を目指さない** - 質を重視
+4. **閾値はCIで強制** - `minimum_coverage` で機械的に下限を担保し、目視チェックに頼らない
 
 ## 次のステップ
 
-1. テストを実行: `bundle exec rspec`
+1. テストを実行: `bundle exec rspec`（カバレッジ閾値割れやN+1検出時は自動的に失敗）
 2. カバレッジを確認: `open coverage/index.html`
 3. デバッグツールを試す
 

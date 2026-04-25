@@ -14,7 +14,7 @@ params_hash = {
     title: "Test Article",
     content: "This is the content",
     published: true,
-    admin_only: true,  # 許可されていないパラメータ
+    admin_only: true, # 許可されていないパラメータ
     user_id: 1
   }
 }
@@ -30,7 +30,8 @@ puts params.inspect
 puts ""
 
 puts "許可するパラメータを指定:"
-permitted_params = params.require(:article).permit(:title, :content, :published, :user_id)
+permitted_params =
+  params.require(:article).permit(:title, :content, :published, :user_id)
 puts permitted_params.inspect
 puts ""
 
@@ -39,7 +40,7 @@ puts "  title: #{permitted_params[:title]}"
 puts "  content: #{permitted_params[:content]}"
 puts "  published: #{permitted_params[:published]}"
 puts "  user_id: #{permitted_params[:user_id]}"
-puts "  admin_only: #{permitted_params[:admin_only] || '(除外されました)'}"
+puts "  admin_only: #{permitted_params[:admin_only] || "(除外されました)"}"
 puts ""
 
 puts "=" * 80
@@ -67,12 +68,13 @@ puts nested_params.inspect
 puts ""
 
 puts "配列とハッシュを含むパラメータを許可:"
-permitted_nested = nested_params.require(:article).permit(
-  :title,
-  :content,
-  tag_ids: [],
-  metadata: [:author, :source]
-)
+permitted_nested =
+  nested_params.require(:article).permit(
+    :title,
+    :content,
+    tag_ids: [],
+    metadata: %i[author source]
+  )
 
 puts permitted_nested.inspect
 puts ""
@@ -82,7 +84,7 @@ puts "  title: #{permitted_nested[:title]}"
 puts "  tag_ids: #{permitted_nested[:tag_ids]}"
 puts "  metadata[:author]: #{permitted_nested[:metadata][:author]}"
 puts "  metadata[:source]: #{permitted_nested[:metadata][:source]}"
-puts "  metadata[:views]: #{permitted_nested[:metadata][:views] || '(除外されました)'}"
+puts "  metadata[:views]: #{permitted_nested[:metadata][:views] || "(除外されました)"}"
 puts ""
 
 puts "=" * 80
@@ -93,22 +95,22 @@ puts ""
 # ユーザーの役割をシミュレート
 class CurrentUser
   attr_accessor :admin
-  
+
   def initialize(admin: false)
     @admin = admin
   end
-  
+
   def admin?
     @admin
   end
 end
 
 def article_params(params, current_user)
-  permitted = [:title, :content, :user_id]
-  
+  permitted = %i[title content user_id]
+
   # 管理者のみが公開ステータスを変更できる
   permitted << :published if current_user.admin?
-  
+
   params.require(:article).permit(*permitted)
 end
 
@@ -119,7 +121,7 @@ regular_permitted = article_params(regular_params, regular_user)
 
 puts "一般ユーザーが許可されるパラメータ:"
 puts regular_permitted.inspect
-puts "  published: #{regular_permitted[:published] || '(除外されました)'}"
+puts "  published: #{regular_permitted[:published] || "(除外されました)"}"
 puts ""
 
 # 管理者の場合
@@ -141,7 +143,7 @@ dangerous_params_hash = {
   user: {
     name: "Alice",
     email: "alice@example.com",
-    admin: true,  # 攻撃者が管理者権限を取得しようとする
+    admin: true, # 攻撃者が管理者権限を取得しようとする
     role: "admin"
   }
 }

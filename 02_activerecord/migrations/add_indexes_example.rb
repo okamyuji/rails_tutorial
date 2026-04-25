@@ -9,24 +9,24 @@ class AddIndexesExample < ActiveRecord::Migration[7.2]
     # published_at カラムにインデックスを追加
     # 公開日時で記事を検索することが多いため
     add_index :articles, :published_at
-    
+
     # published カラムにインデックスを追加
     # 公開済み/下書きでフィルタリングすることが多いため
     add_index :articles, :published
-    
+
     # email カラムにユニークインデックスを追加
     # メールアドレスは一意である必要があるため
     add_index :users, :email, unique: true
-    
+
     # 複合インデックス
     # user_id と published_at の組み合わせでインデックスを作成
     # 「特定ユーザーの最近の記事」を検索することが多いため
-    add_index :articles, [:user_id, :published_at]
-    
+    add_index :articles, %i[user_id published_at]
+
     # user_id と article_id の組み合わせでインデックスを作成
     # 「特定ユーザーの特定記事へのコメント」を検索することが多いため
-    add_index :comments, [:user_id, :article_id]
-    
+    add_index :comments, %i[user_id article_id]
+
     # 部分インデックス（PostgreSQLのみ）
     # 公開済みの記事のみにインデックスを作成
     # add_index :articles, :published_at, where: "published = true", name: 'index_published_articles_on_published_at'

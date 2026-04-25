@@ -9,12 +9,12 @@ Rails.application.routes.draw do
       # 記事配下にコメントをネスト
       resources :articles do
         # 記事に属するコメントの一覧と作成のみをネスト
-        resources :comments, only: [:index, :create]
+        resources :comments, only: %i[index create]
       end
-      
+
       # コメントの個別操作は独立したルート
-      resources :comments, only: [:show, :update, :destroy]
-      
+      resources :comments, only: %i[show update destroy]
+
       # 上記は以下と同等:
       # resources :articles do
       #   resources :comments, shallow: true

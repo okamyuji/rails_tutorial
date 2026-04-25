@@ -11,17 +11,17 @@ Rails.application.routes.draw do
       # 標準的な7つのアクション（index, show, create, update, destroy, new, edit）を生成
       # APIモードでは new と edit は不要なので、exceptで除外することが多い
       resources :users
-      
+
       # onlyオプションで必要なアクションのみを生成
-      resources :articles, only: [:index, :show, :create, :update, :destroy]
-      
+      resources :articles, only: %i[index show create update destroy]
+
       # exceptオプションで不要なアクションを除外
       # resources :articles, except: [:new, :edit]
     end
   end
-  
+
   # ルートパス
-  root 'api/v1/articles#index'
+  root "api/v1/articles#index"
 end
 
 # 生成されるルート:

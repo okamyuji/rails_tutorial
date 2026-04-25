@@ -56,11 +56,10 @@ FactoryBot.define do
 
     # トレイト: 公開記事へのコメント
     trait :on_published_article do
-      association :article, factory: [:article, :published]
+      association :article, factory: %i[article published]
     end
 
     # ファクトリ: 承認済みコメント
     factory :approved_comment, traits: [:approved]
   end
 end
-

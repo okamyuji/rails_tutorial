@@ -64,10 +64,10 @@ class UserPolicy < ApplicationPolicy
   def permitted_attributes
     if admin?
       # 管理者はすべての属性を編集可能
-      [:name, :email, :password, :password_confirmation, :role, :avatar]
+      %i[name email password password_confirmation role avatar]
     else
       # 一般ユーザーは基本的な属性のみ編集可能
-      [:name, :email, :password, :password_confirmation, :avatar]
+      %i[name email password password_confirmation avatar]
     end
   end
 
@@ -76,9 +76,9 @@ class UserPolicy < ApplicationPolicy
   # @return [Array<Symbol>]
   def permitted_attributes_for_create
     if admin?
-      [:name, :email, :password, :password_confirmation, :role]
+      %i[name email password password_confirmation role]
     else
-      [:name, :email, :password, :password_confirmation]
+      %i[name email password password_confirmation]
     end
   end
 
@@ -105,11 +105,7 @@ class UserPolicy < ApplicationPolicy
 
     # ロックされたユーザーを返すスコープ（管理者用）
     def locked
-      if admin?
-        scope.where.not(locked_at: nil)
-      else
-        scope.none
-      end
+      admin? ? scope.where.not(locked_at: nil) : scope.none
     end
   end
 
@@ -120,4 +116,3 @@ class UserPolicy < ApplicationPolicy
     logged_in? && record == user
   end
 end
-

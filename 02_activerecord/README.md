@@ -77,6 +77,17 @@ rails db:migrate
 cat db/schema.rb
 ```
 
+#### strong_migrations による危険操作の自動検出
+
+本番運用では、マイグレーションのレビューを目視に頼らず、`strong_migrations` gemで静的にブロックします。
+
+```bash
+bundle add strong_migrations
+bin/rails generate strong_migrations:install
+```
+
+`migrations/strong_migrations_example.rb` に、危険なパターン（NOT NULL + default の同時付与、マイグレーション内での大量データ更新など）と、3段階に分けた安全な書き換え例があります。CIで `bundle exec rails db:migrate` を実行すれば、危険な操作はexit 1で自動的に止まります。
+
 ### 5. モデルの関連付けとバリデーションを定義
 
 生成されたモデルファイルを編集して、関連付けとバリデーションを追加します。

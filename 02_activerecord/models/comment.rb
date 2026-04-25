@@ -7,7 +7,7 @@ class Comment < ApplicationRecord
   # 関連付け
   # コメントは1人のユーザーに属します
   belongs_to :user
-  
+
   # コメントは1つの記事に属します
   belongs_to :article
 
@@ -18,25 +18,25 @@ class Comment < ApplicationRecord
   # スコープ
   # 新しい順に並べ替え
   scope :recent, -> { order(created_at: :desc) }
-  
+
   # 古い順に並べ替え
   scope :oldest, -> { order(created_at: :asc) }
-  
+
   # 特定のユーザーのコメントを取得
   scope :by_user, ->(user) { where(user: user) }
-  
+
   # 特定の記事のコメントを取得
   scope :for_article, ->(article) { where(article: article) }
 
   # クラスメソッド
   # 今日のコメントを取得
   def self.today
-    where('created_at >= ?', Time.current.beginning_of_day)
+    where("created_at >= ?", Time.current.beginning_of_day)
   end
 
   # 今週のコメントを取得
   def self.this_week
-    where('created_at >= ?', Time.current.beginning_of_week)
+    where("created_at >= ?", Time.current.beginning_of_week)
   end
 
   # インスタンスメソッド

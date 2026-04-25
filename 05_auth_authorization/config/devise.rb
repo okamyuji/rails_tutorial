@@ -6,7 +6,7 @@
 Devise.setup do |config|
   # ==> メーラー設定
   # メール送信元アドレス
-  config.mailer_sender = 'noreply@example.com'
+  config.mailer_sender = "noreply@example.com"
 
   # メーラークラス
   # config.mailer = 'Devise::Mailer'
@@ -15,7 +15,7 @@ Devise.setup do |config|
   # config.parent_mailer = 'ActionMailer::Base'
 
   # ==> ORM設定
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # ==> 認証キー設定
   # 認証に使用するキー（デフォルトはemail）
@@ -112,32 +112,32 @@ Devise.setup do |config|
   # 環境変数またはcredentialsから取得
 
   # Google OAuth2
-  if ENV['GOOGLE_CLIENT_ID'].present?
+  if ENV["GOOGLE_CLIENT_ID"].present?
     config.omniauth :google_oauth2,
-                    ENV['GOOGLE_CLIENT_ID'],
-                    ENV['GOOGLE_CLIENT_SECRET'],
-                    scope: 'email,profile',
-                    prompt: 'select_account',
-                    image_aspect_ratio: 'square',
+                    ENV["GOOGLE_CLIENT_ID"],
+                    ENV.fetch("GOOGLE_CLIENT_SECRET", nil),
+                    scope: "email,profile",
+                    prompt: "select_account",
+                    image_aspect_ratio: "square",
                     image_size: 200
   end
 
   # Facebook
-  if ENV['FACEBOOK_APP_ID'].present?
+  if ENV["FACEBOOK_APP_ID"].present?
     config.omniauth :facebook,
-                    ENV['FACEBOOK_APP_ID'],
-                    ENV['FACEBOOK_APP_SECRET'],
-                    scope: 'email,public_profile',
-                    info_fields: 'email,name,first_name,last_name',
-                    image_size: 'large'
+                    ENV["FACEBOOK_APP_ID"],
+                    ENV.fetch("FACEBOOK_APP_SECRET", nil),
+                    scope: "email,public_profile",
+                    info_fields: "email,name,first_name,last_name",
+                    image_size: "large"
   end
 
   # GitHub
-  if ENV['GITHUB_CLIENT_ID'].present?
+  if ENV["GITHUB_CLIENT_ID"].present?
     config.omniauth :github,
-                    ENV['GITHUB_CLIENT_ID'],
-                    ENV['GITHUB_CLIENT_SECRET'],
-                    scope: 'user:email'
+                    ENV["GITHUB_CLIENT_ID"],
+                    ENV.fetch("GITHUB_CLIENT_SECRET", nil),
+                    scope: "user:email"
   end
 
   # ==> ナビゲーション設定
@@ -149,10 +149,9 @@ Devise.setup do |config|
   # config.sign_in_after_change_password = true
 
   # Turboとの互換性
-  config.navigational_formats = ['*/*', :html, :turbo_stream]
+  config.navigational_formats = ["*/*", :html, :turbo_stream]
 
   # レスポンダー
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 end
-

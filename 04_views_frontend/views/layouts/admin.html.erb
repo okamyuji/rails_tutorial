@@ -9,7 +9,7 @@
     <aside class="admin-sidebar" role="navigation" aria-label="Admin navigation">
       <%= render "admin/sidebar" %>
     </aside>
-    
+
     <%# メインコンテンツエリア %>
     <div class="admin-main">
       <%# 管理画面ヘッダー %>
@@ -17,7 +17,7 @@
         <h1 class="admin-title">
           <%= content_for?(:admin_title) ? yield(:admin_title) : "Dashboard" %>
         </h1>
-        
+
         <%# アクションボタン（個別ページから注入可能） %>
         <% if content_for?(:admin_actions) %>
           <div class="admin-actions">
@@ -25,7 +25,7 @@
           </div>
         <% end %>
       </header>
-      
+
       <%# コンテンツ %>
       <div class="admin-content">
         <%= yield %>
@@ -36,4 +36,3 @@
 
 <%# applicationレイアウトをレンダリング %>
 <%= render template: "layouts/application" %>
-

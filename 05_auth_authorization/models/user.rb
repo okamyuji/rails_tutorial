@@ -6,10 +6,17 @@
 class User < ApplicationRecord
   # Deviseモジュールの設定
   # 必要なモジュールのみを有効化します
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :confirmable, :trackable, :lockable, :timeoutable,
-         :omniauthable, omniauth_providers: [:google_oauth2, :facebook, :github]
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :validatable,
+         :confirmable,
+         :trackable,
+         :lockable,
+         :timeoutable,
+         :omniauthable,
+         omniauth_providers: %i[google_oauth2 facebook github]
 
   # 関連付け
   has_many :articles, dependent: :destroy
@@ -59,11 +66,11 @@ class User < ApplicationRecord
   # @return [User] ユーザーオブジェクト
   def self.new_with_session(params, session)
     super.tap do |user|
-      if (data = session['devise.oauth_data'])
-        user.email = data['info']['email'] if user.email.blank?
-        user.name = data['info']['name'] if user.name.blank?
-        user.provider = data['provider']
-        user.uid = data['uid']
+      if (data = session["devise.oauth_data"])
+        user.email = data["info"]["email"] if user.email.blank?
+        user.name = data["info"]["name"] if user.name.blank?
+        user.provider = data["provider"]
+        user.uid = data["uid"]
       end
     end
   end
@@ -72,7 +79,7 @@ class User < ApplicationRecord
   #
   # @return [Boolean]
   def admin?
-    role == 'admin'
+    role == "admin"
   end
 
   # 編集者以上の権限があるかを確認
@@ -93,7 +100,7 @@ class User < ApplicationRecord
   #
   # @return [String]
   def display_name
-    name.presence || email.split('@').first
+    name.presence || email.split("@").first
   end
 
   # アバターURLを取得（存在しない場合はGravatarを返す）
@@ -202,4 +209,3 @@ end
 #     add_index :users, [:provider, :uid],     unique: true
 #   end
 # end
-

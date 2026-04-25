@@ -6,40 +6,47 @@
 module Api
   module V1
     class UsersController < ApplicationController
-      before_action :set_user, only: [:show, :update, :destroy]
+      before_action :set_user, only: %i[show update destroy]
 
       # GET /api/v1/users
       # ユーザーの一覧を取得します
       def index
         @users = User.order(created_at: :desc)
-        
+
         # 検索機能
-        @users = @users.where('name LIKE ?', "%#{params[:q]}%") if params[:q].present?
-        
+        @users = @users.where("name LIKE ?", "%#{params[:q]}%") if params[
+          :q
+        ].present?
+
         render json: {
-          users: @users.as_json(except: [:created_at, :updated_at])
-        }
+                 users: @users.as_json(except: %i[created_at updated_at])
+               }
       end
 
       # GET /api/v1/users/:id
       # 特定のユーザーを取得します
       def show
-        render json: @user.as_json(
-          include: {
-            articles: { only: [:id, :title, :published] }
-          }
-        )
+        render json:
+                 @user.as_json(
+                   include: {
+                     articles: {
+                       only: %i[id title published]
+                     }
+                   }
+                 )
       end
 
       # POST /api/v1/users
       # 新しいユーザーを作成します
       def create
         @user = User.new(user_params)
-        
+
         if @user.save
           render json: @user, status: :created
         else
-          render json: { errors: format_errors(@user.errors) }, 
+          render json: {
+                   errors: format_errors(@user.errors)
+                 },
                  status: :unprocessable_entity
         end
       end
@@ -50,7 +57,9 @@ module Api
         if @user.update(user_params)
           render json: @user
         else
-          render json: { errors: format_errors(@user.errors) }, 
+          render json: {
+                   errors: format_errors(@user.errors)
+                 },
                  status: :unprocessable_entity
         end
       end
@@ -68,7 +77,7 @@ module Api
       def set_user
         @user = User.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'User not found' }, status: :not_found
+        render json: { error: "User not found" }, status: :not_found
       end
 
       # Strong Parameters
@@ -79,10 +88,7 @@ module Api
       # エラーメッセージを整形します
       def format_errors(errors)
         errors.map do |error|
-          {
-            field: error.attribute,
-            message: error.full_message
-          }
+          { field: error.attribute, message: error.full_message }
         end
       end
     end

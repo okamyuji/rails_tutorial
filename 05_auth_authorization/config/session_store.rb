@@ -5,11 +5,12 @@
 
 # 環境に応じてセッションストアを設定
 Rails.application.config.session_store :cookie_store,
-  key: "_#{Rails.application.class.module_parent_name.downcase}_session",
-  secure: Rails.env.production?,  # HTTPSでのみCookieを送信
-  httponly: true,                 # JavaScriptからのアクセスを防止
-  same_site: :lax,                # クロスサイトリクエストでのCookie送信を制限
-  expire_after: 1.week            # セッションの有効期限
+                                       key:
+                                         "_#{Rails.application.class.module_parent_name.downcase}_session",
+                                       secure: Rails.env.production?, # HTTPSでのみCookieを送信
+                                       httponly: true, # JavaScriptからのアクセスを防止
+                                       same_site: :lax, # クロスサイトリクエストでのCookie送信を制限
+                                       expire_after: 1.week # セッションの有効期限
 
 # 本番環境でRedisを使用する場合
 # if Rails.env.production? && ENV['REDIS_URL'].present?
@@ -60,4 +61,3 @@ Rails.application.config.session_store :cookie_store,
 # expire_after: セッションの有効期限
 # domain: Cookieのドメイン
 # path: Cookieのパス
-

@@ -57,17 +57,12 @@ class CommentPolicy < ApplicationPolicy
   # 表示可能なコメントをフィルタリング
   class Scope < Scope
     def resolve
-      if admin?
-        # 管理者はすべてのコメントを表示（報告されたものを含む）
-        scope.all
-      else
+      if !admin? && scope.column_names.include?("approved")
         # 一般ユーザーは承認済みのコメントのみ表示
-        # モデレーション機能がない場合はすべて表示
-        if scope.column_names.include?('approved')
-          scope.where(approved: true)
-        else
-          scope.all
-        end
+        scope.where(approved: true)
+      else
+        # 管理者、もしくはモデレーション機能がない場合はすべて表示
+        scope.all
       end
     end
 
@@ -78,7 +73,7 @@ class CommentPolicy < ApplicationPolicy
 
     # 報告されたコメントを返すスコープ（管理者用）
     def reported
-      if admin? && scope.column_names.include?('reported')
+      if admin? && scope.column_names.include?("reported")
         scope.where(reported: true)
       else
         scope.none
@@ -93,4 +88,3 @@ class CommentPolicy < ApplicationPolicy
     logged_in? && record.article.user == user
   end
 end
-

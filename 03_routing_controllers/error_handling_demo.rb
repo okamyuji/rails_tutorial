@@ -13,15 +13,42 @@ puts "-" * 40
 puts ""
 
 status_codes = {
-  200 => { name: 'OK', usage: 'リクエストが成功（GET）' },
-  201 => { name: 'Created', usage: 'リソースが正常に作成（POST）' },
-  204 => { name: 'No Content', usage: '成功したがレスポンスボディなし（DELETE）' },
-  400 => { name: 'Bad Request', usage: 'リクエストの形式が不正' },
-  401 => { name: 'Unauthorized', usage: '認証が必要' },
-  403 => { name: 'Forbidden', usage: '権限がない' },
-  404 => { name: 'Not Found', usage: 'リソースが見つからない' },
-  422 => { name: 'Unprocessable Entity', usage: 'バリデーションエラー' },
-  500 => { name: 'Internal Server Error', usage: 'サーバー内部エラー' }
+  200 => {
+    name: "OK",
+    usage: "リクエストが成功（GET）"
+  },
+  201 => {
+    name: "Created",
+    usage: "リソースが正常に作成（POST）"
+  },
+  204 => {
+    name: "No Content",
+    usage: "成功したがレスポンスボディなし（DELETE）"
+  },
+  400 => {
+    name: "Bad Request",
+    usage: "リクエストの形式が不正"
+  },
+  401 => {
+    name: "Unauthorized",
+    usage: "認証が必要"
+  },
+  403 => {
+    name: "Forbidden",
+    usage: "権限がない"
+  },
+  404 => {
+    name: "Not Found",
+    usage: "リソースが見つからない"
+  },
+  422 => {
+    name: "Unprocessable Entity",
+    usage: "バリデーションエラー"
+  },
+  500 => {
+    name: "Internal Server Error",
+    usage: "サーバー内部エラー"
+  }
 }
 
 status_codes.each do |code, info|
@@ -40,27 +67,27 @@ puts ""
 error_response = {
   errors: [
     {
-      status: '422',
-      code: 'validation_failed',
-      title: 'Validation Failed',
-      detail: 'Title can\'t be blank',
+      status: "422",
+      code: "validation_failed",
+      title: "Validation Failed",
+      detail: "Title can't be blank",
       source: {
-        pointer: '/data/attributes/title'
+        pointer: "/data/attributes/title"
       }
     },
     {
-      status: '422',
-      code: 'validation_failed',
-      title: 'Validation Failed',
-      detail: 'Content is too short (minimum is 10 characters)',
+      status: "422",
+      code: "validation_failed",
+      title: "Validation Failed",
+      detail: "Content is too short (minimum is 10 characters)",
       source: {
-        pointer: '/data/attributes/content'
+        pointer: "/data/attributes/content"
       }
     }
   ]
 }
 
-require 'json'
+require "json"
 puts JSON.pretty_generate(error_response)
 puts ""
 
@@ -80,49 +107,49 @@ puts "rescue_fromの使用例:"
 puts ""
 
 rescue_from_example = <<~RUBY
-class ApplicationController < ActionController::API
-  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-  rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
-  rescue_from ActionController::ParameterMissing, with: :parameter_missing
+  class ApplicationController < ActionController::API
+    rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+    rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+    rescue_from ActionController::ParameterMissing, with: :parameter_missing
 
-  private
+    private
 
-  def record_not_found(exception)
-    render json: {
-      errors: [{
-        status: '404',
-        code: 'not_found',
-        title: 'Record Not Found',
-        detail: exception.message
-      }]
-    }, status: :not_found
+    def record_not_found(exception)
+      render json: {
+        errors: [{
+          status: '404',
+          code: 'not_found',
+          title: 'Record Not Found',
+          detail: exception.message
+        }]
+      }, status: :not_found
+    end
+
+    def record_invalid(exception)
+      render json: {
+        errors: exception.record.errors.map do |error|
+          {
+            status: '422',
+            code: 'validation_failed',
+            title: 'Validation Failed',
+            detail: error.full_message,
+            source: { pointer: "/data/attributes/\#{error.attribute}" }
+          }
+        end
+      }, status: :unprocessable_entity
+    end
+
+    def parameter_missing(exception)
+      render json: {
+        errors: [{
+          status: '400',
+          code: 'parameter_missing',
+          title: 'Parameter Missing',
+          detail: exception.message
+        }]
+      }, status: :bad_request
+    end
   end
-
-  def record_invalid(exception)
-    render json: {
-      errors: exception.record.errors.map do |error|
-        {
-          status: '422',
-          code: 'validation_failed',
-          title: 'Validation Failed',
-          detail: error.full_message,
-          source: { pointer: "/data/attributes/\#{error.attribute}" }
-        }
-      end
-    }, status: :unprocessable_entity
-  end
-
-  def parameter_missing(exception)
-    render json: {
-      errors: [{
-        status: '400',
-        code: 'parameter_missing',
-        title: 'Parameter Missing',
-        detail: exception.message
-      }]
-    }, status: :bad_request
-  end
-end
 RUBY
 
 puts rescue_from_example
@@ -137,22 +164,22 @@ puts "1. コントローラでの使用例:"
 puts ""
 
 controller_example = <<~RUBY
-class ArticlesController < ApplicationController
-  def create
-    @article = Article.new(article_params)
-    @article.save!  # 失敗時に例外を発生
-    
-    render json: @article, status: :created
-  rescue ActiveRecord::RecordInvalid => e
-    # ApplicationControllerのrescue_fromが自動処理
-    raise
+  class ArticlesController < ApplicationController
+    def create
+      @article = Article.new(article_params)
+      @article.save!  # 失敗時に例外を発生
+  #{"    "}
+      render json: @article, status: :created
+    rescue ActiveRecord::RecordInvalid => e
+      # ApplicationControllerのrescue_fromが自動処理
+      raise
+    end
+  #{"  "}
+    def show
+      @article = Article.find(params[:id])  # 見つからない場合は例外
+      render json: @article
+    end
   end
-  
-  def show
-    @article = Article.find(params[:id])  # 見つからない場合は例外
-    render json: @article
-  end
-end
 RUBY
 
 puts controller_example
@@ -162,37 +189,37 @@ puts "2. カスタム例外の定義:"
 puts ""
 
 custom_exception_example = <<~RUBY
-class ApplicationController < ActionController::API
-  class Unauthorized < StandardError; end
-  class Forbidden < StandardError; end
+  class ApplicationController < ActionController::API
+    class Unauthorized < StandardError; end
+    class Forbidden < StandardError; end
 
-  rescue_from Unauthorized, with: :handle_unauthorized
-  rescue_from Forbidden, with: :handle_forbidden
+    rescue_from Unauthorized, with: :handle_unauthorized
+    rescue_from Forbidden, with: :handle_forbidden
 
-  private
+    private
 
-  def handle_unauthorized
-    render json: {
-      errors: [{
-        status: '401',
-        code: 'unauthorized',
-        title: 'Unauthorized',
-        detail: 'Authentication required'
-      }]
-    }, status: :unauthorized
+    def handle_unauthorized
+      render json: {
+        errors: [{
+          status: '401',
+          code: 'unauthorized',
+          title: 'Unauthorized',
+          detail: 'Authentication required'
+        }]
+      }, status: :unauthorized
+    end
+
+    def handle_forbidden
+      render json: {
+        errors: [{
+          status: '403',
+          code: 'forbidden',
+          title: 'Forbidden',
+          detail: 'You do not have permission'
+        }]
+      }, status: :forbidden
+    end
   end
-
-  def handle_forbidden
-    render json: {
-      errors: [{
-        status: '403',
-        code: 'forbidden',
-        title: 'Forbidden',
-        detail: 'You do not have permission'
-      }]
-    }, status: :forbidden
-  end
-end
 RUBY
 
 puts custom_exception_example
@@ -202,28 +229,28 @@ puts "3. 環境別のエラーハンドリング:"
 puts ""
 
 env_specific_example = <<~RUBY
-def internal_server_error(exception)
-  if Rails.env.production?
-    # 本番環境: 詳細を隠す
-    render json: {
-      errors: [{
-        status: '500',
-        title: 'Internal Server Error',
-        detail: 'An unexpected error occurred'
-      }]
-    }, status: :internal_server_error
-  else
-    # 開発環境: 詳細を表示
-    render json: {
-      errors: [{
-        status: '500',
-        title: 'Internal Server Error',
-        detail: exception.message,
-        backtrace: exception.backtrace.first(10)
-      }]
-    }, status: :internal_server_error
+  def internal_server_error(exception)
+    if Rails.env.production?
+      # 本番環境: 詳細を隠す
+      render json: {
+        errors: [{
+          status: '500',
+          title: 'Internal Server Error',
+          detail: 'An unexpected error occurred'
+        }]
+      }, status: :internal_server_error
+    else
+      # 開発環境: 詳細を表示
+      render json: {
+        errors: [{
+          status: '500',
+          title: 'Internal Server Error',
+          detail: exception.message,
+          backtrace: exception.backtrace.first(10)
+        }]
+      }, status: :internal_server_error
+    end
   end
-end
 RUBY
 
 puts env_specific_example
@@ -270,8 +297,9 @@ puts ""
 # ActiveModelエラーをシミュレート
 class DemoArticle
   include ActiveModel::Model
+
   attr_accessor :title, :content
-  
+
   validates :title, presence: true, length: { minimum: 5 }
   validates :content, presence: true, length: { minimum: 10 }
 end
@@ -284,15 +312,18 @@ puts article.errors.full_messages.inspect
 puts ""
 
 # JSON:API形式に変換
-json_api_errors = article.errors.map do |error|
-  {
-    status: '422',
-    code: 'validation_failed',
-    title: 'Validation Failed',
-    detail: error.full_message,
-    source: { pointer: "/data/attributes/#{error.attribute}" }
-  }
-end
+json_api_errors =
+  article.errors.map do |error|
+    {
+      status: "422",
+      code: "validation_failed",
+      title: "Validation Failed",
+      detail: error.full_message,
+      source: {
+        pointer: "/data/attributes/#{error.attribute}"
+      }
+    }
+  end
 
 puts "JSON:API形式のエラー:"
 puts JSON.pretty_generate({ errors: json_api_errors })

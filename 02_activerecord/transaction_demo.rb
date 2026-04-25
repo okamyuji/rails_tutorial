@@ -9,7 +9,7 @@ puts "=" * 80
 puts ""
 
 # データが存在するか確認
-if User.count == 0
+if User.none?
   puts "エラー: サンプルデータが存在しません"
   puts "まず seed_data.rb を実行してください"
   exit 1
@@ -27,10 +27,10 @@ initial_user_count = User.count
 begin
   user1 = User.create!(name: "Transaction User 1", email: "trans1@example.com")
   puts "✓ ユーザー1を作成しました: #{user1.name}"
-  
+
   user2 = User.create!(name: "Transaction User 2", email: "trans2@example.com")
   puts "✓ ユーザー2を作成しました: #{user2.name}"
-  
+
   # 意図的にエラーを発生させる（メールアドレスなし）
   user3 = User.create!(name: "Transaction User 3", email: nil)
   puts "✓ ユーザー3を作成しました: #{user3.name}"
@@ -66,12 +66,14 @@ initial_user_count = User.count
 
 begin
   User.transaction do
-    user1 = User.create!(name: "Transaction User 1", email: "trans1@example.com")
+    user1 =
+      User.create!(name: "Transaction User 1", email: "trans1@example.com")
     puts "✓ ユーザー1を作成しました: #{user1.name}"
-    
-    user2 = User.create!(name: "Transaction User 2", email: "trans2@example.com")
+
+    user2 =
+      User.create!(name: "Transaction User 2", email: "trans2@example.com")
     puts "✓ ユーザー2を作成しました: #{user2.name}"
-    
+
     # 意図的にエラーを発生させる
     user3 = User.create!(name: "Transaction User 3", email: nil)
     puts "✓ ユーザー3を作成しました: #{user3.name}"
@@ -100,22 +102,23 @@ puts "-" * 40
 puts ""
 
 # アカウントを表現するシンプルな構造体
-Account = Struct.new(:id, :name, :balance) do
-  def self.find(id)
-    # 簡易的な実装
-    case id
-    when 1
-      new(1, "Alice", 1000)
-    when 2
-      new(2, "Bob", 500)
+Account =
+  Struct.new(:id, :name, :balance) do
+    def self.find(id)
+      # 簡易的な実装
+      case id
+      when 1
+        new(1, "Alice", 1000)
+      when 2
+        new(2, "Bob", 500)
+      end
+    end
+
+    def update!(attributes)
+      self.balance = attributes[:balance] if attributes[:balance]
+      self
     end
   end
-  
-  def update!(attributes)
-    self.balance = attributes[:balance] if attributes[:balance]
-    self
-  end
-end
 
 puts "初期状態:"
 alice_account = Account.find(1)
@@ -134,10 +137,10 @@ puts ""
 #   alice_account.balance -= amount
 #   alice_account.update!(balance: alice_account.balance)
 #   puts "✓ Aliceの残高を減らしました"
-#   
+#
 #   # ここでエラーが発生すると...
 #   raise "ネットワークエラー"
-#   
+#
 #   bob_account.balance += amount
 #   bob_account.update!(balance: bob_account.balance)
 #   puts "✓ Bobの残高を増やしました"
@@ -155,17 +158,17 @@ begin
   #   alice_account.update!(balance: alice_account.balance - amount)
   #   bob_account.update!(balance: bob_account.balance + amount)
   # end
-  
+
   # デモ用のシミュレーション
   puts "  トランザクション開始"
   puts "  ✓ Aliceの残高を#{alice_account.balance - amount}円に変更"
   puts "  ✓ Bobの残高を#{bob_account.balance + amount}円に変更"
   puts "  トランザクションコミット"
-  
+
   alice_account.balance -= amount
   bob_account.balance += amount
   success = true
-rescue => e
+rescue StandardError => e
   puts "  ✗ エラー発生: #{e.message}"
   puts "  トランザクションロールバック"
 end
@@ -192,26 +195,31 @@ puts ""
 
 User.transaction do
   puts "親トランザクション開始"
-  
-  user = User.create!(name: "Parent Transaction User", email: "parent@example.com")
+
+  user =
+    User.create!(name: "Parent Transaction User", email: "parent@example.com")
   puts "  ✓ ユーザーを作成: #{user.name}"
-  
+
   begin
     User.transaction do
       puts "  子トランザクション開始"
-      
-      article = user.articles.create!(title: "Nested Transaction Article", content: "Content here")
+
+      article =
+        user.articles.create!(
+          title: "Nested Transaction Article",
+          content: "Content here"
+        )
       puts "    ✓ 記事を作成: #{article.title}"
-      
+
       # 子トランザクションでエラーを発生させる
       raise ActiveRecord::Rollback, "子トランザクションのロールバック"
     end
   rescue ActiveRecord::Rollback => e
     puts "    ✗ 子トランザクションがロールバックされました"
   end
-  
+
   puts "  親トランザクション継続中"
-  
+
   # 親トランザクションはコミットされる
   puts "親トランザクション完了"
 end

@@ -10,21 +10,18 @@ module Users
 
     # GET /users/sign_in
     # ログインフォームを表示
-    def new
-      super
-    end
 
     # POST /users/sign_in
     # ログイン処理
     def create
       super do |resource|
         # ログイン成功時の追加処理
-        if resource.persisted?
+        if resource.persisted? && respond_to?(:log_sign_in, true)
           # セッションIDを再生成（セッション固定攻撃対策）
           # Deviseは自動的に行うが、明示的に記述
-          
+
           # ログイン履歴を記録（オプション）
-          log_sign_in(resource) if respond_to?(:log_sign_in, true)
+          log_sign_in(resource)
         end
       end
     end
@@ -34,7 +31,7 @@ module Users
     def destroy
       # ログアウト前の処理
       user = current_user
-      
+
       super do
         # ログアウト成功時の追加処理
         # ログアウト履歴を記録（オプション）
@@ -64,7 +61,7 @@ module Users
     # ログイン履歴を記録
     def log_sign_in(user)
       Rails.logger.info "User signed in: #{user.email} from #{request.remote_ip}"
-      
+
       # LoginHistoryモデルがある場合
       # LoginHistory.create!(
       #   user: user,
@@ -85,4 +82,3 @@ module Users
     # end
   end
 end
-

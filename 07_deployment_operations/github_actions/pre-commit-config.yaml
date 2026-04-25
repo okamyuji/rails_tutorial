@@ -1,0 +1,59 @@
+# pre-commit hooks configuration
+# https://pre-commit.com/
+#
+# 配置先: リポジトリルートに `.pre-commit-config.yaml` として配置する
+# セットアップ: `brew install pre-commit && pre-commit install`
+# 全件チェック: `pre-commit run --all-files`
+#
+# CIで動かしているツールと同じものをコミット直前に走らせ、
+# push前のフィードバックループを短くするためのフック設定です。
+
+repos:
+  # 秘密情報のうっかりコミットを防ぐ
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.0
+    hooks:
+      - id: gitleaks
+
+  # Ruby系ツールはローカルのbundle exec経由で実行する
+  - repo: local
+    hooks:
+      - id: rubocop
+        name: rubocop
+        entry: bundle exec rubocop --force-exclusion --parallel
+        language: system
+        types: [ruby]
+
+      - id: stree
+        name: stree (Syntax Tree)
+        entry: bundle exec stree check
+        language: system
+        types: [ruby]
+
+      - id: erblint
+        name: erb-lint
+        entry: bundle exec erblint
+        language: system
+        files: \.html\.erb$
+
+      - id: brakeman
+        name: brakeman
+        entry: bundle exec brakeman --quiet --exit-on-warn
+        language: system
+        pass_filenames: false
+        types: [ruby]
+
+      - id: bundler-audit
+        name: bundler-audit
+        entry: bundle exec bundler-audit check --update
+        language: system
+        pass_filenames: false
+        files: ^Gemfile\.lock$
+
+      # Sorbet を導入している場合のみ有効化
+      # - id: sorbet
+      #   name: sorbet typecheck
+      #   entry: bundle exec srb tc
+      #   language: system
+      #   pass_filenames: false
+      #   types: [ruby]

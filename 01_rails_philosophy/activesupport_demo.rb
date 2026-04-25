@@ -50,16 +50,12 @@ puts "3. 複数形と単数形の変換"
 puts "-" * 40
 puts ""
 
-words = ["person", "child", "mouse", "ox", "sheep", "fish", "user"]
-words.each do |word|
-  puts "#{word.ljust(10)} → #{word.pluralize}"
-end
+words = %w[person child mouse ox sheep fish user]
+words.each { |word| puts "#{word.ljust(10)} → #{word.pluralize}" }
 puts ""
 
-plural_words = ["people", "children", "mice", "oxen", "sheep", "fish", "users"]
-plural_words.each do |word|
-  puts "#{word.ljust(10)} → #{word.singularize}"
-end
+plural_words = %w[people children mice oxen sheep fish users]
+plural_words.each { |word| puts "#{word.ljust(10)} → #{word.singularize}" }
 puts ""
 
 # セクション4：文字列の人間向け表現
@@ -67,14 +63,14 @@ puts "4. 文字列の人間向け表現"
 puts "-" * 40
 puts ""
 
-puts "user_name → #{('user_name').humanize}"
-puts "employee_salary → #{('employee_salary').humanize}"
-puts "author_id → #{('author_id').humanize}"
+puts "user_name → #{"user_name".humanize}"
+puts "employee_salary → #{"employee_salary".humanize}"
+puts "author_id → #{"author_id".humanize}"
 puts ""
 
 puts "タイトル化:"
-puts "hello world → #{('hello world').titleize}"
-puts "the lord of the rings → #{('the lord of the rings').titleize}"
+puts "hello world → #{"hello world".titleize}"
+puts "the lord of the rings → #{"the lord of the rings".titleize}"
 puts ""
 
 # セクション5：blank?とpresent?
@@ -82,7 +78,7 @@ puts "5. blank? と present? の使用"
 puts "-" * 40
 puts ""
 
-test_values = [nil, "", "   ", "text", [], [1, 2], {}, {key: "value"}]
+test_values = [nil, "", "   ", "text", [], [1, 2], {}, { key: "value" }]
 test_values.each do |value|
   value_str = value.inspect.ljust(20)
   puts "#{value_str} blank?: #{value.blank?.to_s.ljust(5)} present?: #{value.present?}"
@@ -107,7 +103,7 @@ puts "複数形チェック:"
 puts "1.zero? = #{1.zero?}"
 puts "0.zero? = #{0.zero?}"
 puts "5.positive? = #{5.positive?}"
-puts "(-3).negative? = #{(-3).negative?}"
+puts "(-3).negative? = #{-3.negative?}"
 puts ""
 
 # セクション7：配列の便利なメソッド

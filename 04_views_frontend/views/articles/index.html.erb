@@ -25,39 +25,39 @@
     <p class="page-description">
       Browse our latest articles and insights
     </p>
-    
+
     <div class="page-actions">
       <%= link_to new_article_path, class: "btn btn-primary" do %>
         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
         New Article
       <% end %>
     </div>
   </header>
-  
+
   <%# 検索・フィルターセクション %>
   <section class="filter-section">
-    <%= form_with url: articles_path, 
-                  method: :get, 
+    <%= form_with url: articles_path,
+                  method: :get,
                   class: "search-form",
                   data: { controller: "autosubmit", autosubmit_delay_value: 500 } do |f| %>
-      
+
       <div class="search-input-group">
         <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <%= f.text_field :q, 
+        <%= f.text_field :q,
                          value: params[:q],
                          class: "search-input",
                          placeholder: "Search articles...",
                          data: { action: "input->autosubmit#submit" },
                          aria: { label: "Search articles" } %>
       </div>
-      
+
       <div class="filter-group">
-        <%= f.select :status, 
+        <%= f.select :status,
                      options_for_select([
                        ["All", ""],
                        ["Published", "published"],
@@ -66,7 +66,7 @@
                      {},
                      class: "filter-select",
                      data: { action: "change->autosubmit#submit" } %>
-        
+
         <%= f.select :sort,
                      options_for_select([
                        ["Newest First", "newest"],
@@ -79,7 +79,7 @@
       </div>
     <% end %>
   </section>
-  
+
   <%# 記事一覧（Turbo Frame） %>
   <%= turbo_frame_tag "articles", data: { turbo_action: "advance" } do %>
     <% if @articles.any? %>
@@ -87,7 +87,7 @@
         <%# コレクションをパーシャルに渡す %>
         <%= render @articles %>
       </div>
-      
+
       <%# ページネーション %>
       <% if @articles.respond_to?(:total_pages) && @articles.total_pages > 1 %>
         <nav class="pagination-nav" aria-label="Pagination">
@@ -97,24 +97,24 @@
               <%= link_to articles_path(page: @articles.current_page - 1, q: params[:q], status: params[:status], sort: params[:sort]),
                           class: "pagination-link pagination-prev" do %>
                 <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
                 Previous
               <% end %>
             <% end %>
-            
+
             <%# ページ番号 %>
             <span class="pagination-info">
               Page <%= @articles.current_page %> of <%= @articles.total_pages %>
             </span>
-            
+
             <%# 次のページ %>
             <% if @articles.current_page < @articles.total_pages %>
               <%= link_to articles_path(page: @articles.current_page + 1, q: params[:q], status: params[:status], sort: params[:sort]),
                           class: "pagination-link pagination-next" do %>
                 Next
                 <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               <% end %>
             <% end %>
@@ -125,8 +125,8 @@
       <%# 記事がない場合 %>
       <div class="empty-state">
         <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
         <h3 class="empty-title">No articles found</h3>
         <p class="empty-description">
@@ -143,4 +143,3 @@
     <% end %>
   <% end %>
 </div>
-

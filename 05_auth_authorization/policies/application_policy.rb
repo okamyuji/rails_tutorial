@@ -113,4 +113,3 @@ class ApplicationPolicy
     logged_in? && record.respond_to?(:user) && record.user == user
   end
 end
-

@@ -11,48 +11,40 @@ Rails.application.configure do
   config.lograge.formatter = Lograge::Formatters::Json.new
 
   # カスタムオプション
-  config.lograge.custom_options = lambda do |event|
-    {
-      # タイムスタンプ
-      time: Time.current.iso8601,
-
-      # リクエストID
-      request_id: event.payload[:request_id],
-
-      # ユーザーID
-      user_id: event.payload[:user_id],
-
-      # IPアドレス
-      ip: event.payload[:ip],
-
-      # User Agent
-      user_agent: event.payload[:user_agent],
-
-      # リファラー
-      referer: event.payload[:referer],
-
-      # パラメータ（フィルタリング済み）
-      params: event.payload[:params]&.except('controller', 'action', 'format'),
-
-      # 例外情報
-      exception: event.payload[:exception]&.first,
-      exception_message: event.payload[:exception_object]&.message
-    }.compact
-  end
+  config.lograge.custom_options =
+    lambda do |event|
+      {
+        # タイムスタンプ
+        time: Time.current.iso8601,
+        # リクエストID
+        request_id: event.payload[:request_id],
+        # ユーザーID
+        user_id: event.payload[:user_id],
+        # IPアドレス
+        ip: event.payload[:ip],
+        # User Agent
+        user_agent: event.payload[:user_agent],
+        # リファラー
+        referer: event.payload[:referer],
+        # パラメータ（フィルタリング済み）
+        params:
+          event.payload[:params]&.except("controller", "action", "format"),
+        # 例外情報
+        exception: event.payload[:exception]&.first,
+        exception_message: event.payload[:exception_object]&.message
+      }.compact
+    end
 
   # カスタムペイロード（ApplicationControllerで設定）
   config.lograge.custom_payload do |controller|
-    {
-      host: controller.request.host,
-      remote_ip: controller.request.remote_ip
-    }
+    { host: controller.request.host, remote_ip: controller.request.remote_ip }
   end
 
   # 無視するアクション
-  config.lograge.ignore_actions = [
-    'HealthController#show',
-    'HealthController#live',
-    'HealthController#ready'
+  config.lograge.ignore_actions = %w[
+    HealthController#show
+    HealthController#live
+    HealthController#ready
   ]
 
   # 無視するパス
@@ -111,4 +103,3 @@ end
 
 # CloudWatch Logs
 # AWS::Rails.add_action_controller_logger
-

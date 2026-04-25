@@ -60,13 +60,21 @@ class ArticlePolicy < ApplicationPolicy
   def permitted_attributes
     if admin?
       # 管理者はすべての属性を編集可能
-      [:title, :content, :published, :featured, :category_id, :published_at, tag_ids: []]
+      [
+        :title,
+        :content,
+        :published,
+        :featured,
+        :category_id,
+        :published_at,
+        { tag_ids: [] }
+      ]
     elsif user&.editor?
       # 編集者は公開状態とカテゴリを編集可能
-      [:title, :content, :published, :category_id, tag_ids: []]
+      [:title, :content, :published, :category_id, { tag_ids: [] }]
     else
       # 一般ユーザーは基本的な属性のみ編集可能
-      [:title, :content]
+      %i[title content]
     end
   end
 
@@ -74,7 +82,7 @@ class ArticlePolicy < ApplicationPolicy
   #
   # @return [Array<Symbol>]
   def permitted_attributes_for_create
-    [:title, :content, :category_id, tag_ids: []]
+    [:title, :content, :category_id, { tag_ids: [] }]
   end
 
   # 更新時に許可される属性
@@ -93,8 +101,7 @@ class ArticlePolicy < ApplicationPolicy
         scope.all
       elsif logged_in?
         # ログインユーザーは公開記事と自分の記事を表示
-        scope.where(published: true)
-             .or(scope.where(user: user))
+        scope.where(published: true).or(scope.where(user: user))
       else
         # ゲストは公開記事のみ表示
         scope.where(published: true)
@@ -123,4 +130,3 @@ class ArticlePolicy < ApplicationPolicy
     end
   end
 end
-

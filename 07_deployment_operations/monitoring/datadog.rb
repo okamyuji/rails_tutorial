@@ -5,13 +5,13 @@
 
 Datadog.configure do |c|
   # サービス名
-  c.service = ENV['DD_SERVICE'] || 'rails-app'
+  c.service = ENV["DD_SERVICE"] || "rails-app"
 
   # 環境名
   c.env = Rails.env
 
   # バージョン
-  c.version = ENV['GIT_COMMIT'] || '1.0.0'
+  c.version = ENV["GIT_COMMIT"] || "1.0.0"
 
   # ============================================================
   # トレーシング設定
@@ -69,7 +69,7 @@ Datadog.configure do |c|
   # ============================================================
 
   # プロファイリングの有効化
-  c.profiling.enabled = ENV['DD_PROFILING_ENABLED'] == 'true'
+  c.profiling.enabled = ENV["DD_PROFILING_ENABLED"] == "true"
 
   # ============================================================
   # その他の設定
@@ -79,10 +79,7 @@ Datadog.configure do |c|
   c.diagnostics.debug = Rails.env.development?
 
   # タグの追加
-  c.tags = {
-    'team' => 'backend',
-    'component' => 'web'
-  }
+  c.tags = { "team" => "backend", "component" => "web" }
 end
 
 # ============================================================
@@ -141,4 +138,3 @@ end
 #     }
 #   }
 # end
-

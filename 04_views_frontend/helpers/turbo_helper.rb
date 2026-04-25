@@ -10,14 +10,10 @@ module TurboHelper
   # @param options [Hash] オプション
   # @yield ブロック内のコンテンツ
   # @return [String] Turbo Frame HTML
-  def turbo_frame_wrapper(id, options = {}, &block)
-    defaults = {
-      data: {
-        turbo_action: 'advance'
-      }
-    }
-    
-    turbo_frame_tag(id, defaults.deep_merge(options), &block)
+  def turbo_frame_wrapper(id, options = {}, &)
+    defaults = { data: { turbo_action: "advance" } }
+
+    turbo_frame_tag(id, defaults.deep_merge(options), &)
   end
 
   # 遅延読み込み用のTurbo Frameを生成
@@ -26,11 +22,11 @@ module TurboHelper
   # @param src [String] 読み込み元URL
   # @param loading_text [String] 読み込み中のテキスト
   # @return [String] Turbo Frame HTML
-  def lazy_turbo_frame(id, src:, loading_text: 'Loading...')
-    turbo_frame_tag id, src: src, loading: 'lazy' do
-      content_tag :div, class: 'loading-placeholder' do
-        content_tag(:span, loading_text, class: 'loading-text') +
-        content_tag(:div, '', class: 'loading-spinner')
+  def lazy_turbo_frame(id, src:, loading_text: "Loading...")
+    turbo_frame_tag id, src: src, loading: "lazy" do
+      content_tag :div, class: "loading-placeholder" do
+        content_tag(:span, loading_text, class: "loading-text") +
+          content_tag(:div, "", class: "loading-spinner")
       end
     end
   end
@@ -41,8 +37,12 @@ module TurboHelper
   # @param message [String] メッセージ内容
   # @return [String] Turbo Stream HTML
   def turbo_stream_flash(type, message)
-    turbo_stream.prepend 'flash_messages' do
-      render partial: 'shared/flash_message', locals: { type: type, message: message }
+    turbo_stream.prepend "flash_messages" do
+      render partial: "shared/flash_message",
+             locals: {
+               type: type,
+               message: message
+             }
     end
   end
 
@@ -64,23 +64,23 @@ module TurboHelper
   # Turbo Streamアクションのヘルパー
   module StreamActions
     # 要素を追加
-    def stream_append(target, content = nil, &block)
-      turbo_stream.append(target, content, &block)
+    def stream_append(target, content = nil, &)
+      turbo_stream.append(target, content, &)
     end
 
     # 要素を先頭に追加
-    def stream_prepend(target, content = nil, &block)
-      turbo_stream.prepend(target, content, &block)
+    def stream_prepend(target, content = nil, &)
+      turbo_stream.prepend(target, content, &)
     end
 
     # 要素を置換
-    def stream_replace(target, content = nil, &block)
-      turbo_stream.replace(target, content, &block)
+    def stream_replace(target, content = nil, &)
+      turbo_stream.replace(target, content, &)
     end
 
     # 要素を更新（内部コンテンツのみ）
-    def stream_update(target, content = nil, &block)
-      turbo_stream.update(target, content, &block)
+    def stream_update(target, content = nil, &)
+      turbo_stream.update(target, content, &)
     end
 
     # 要素を削除
@@ -89,16 +89,15 @@ module TurboHelper
     end
 
     # 要素の前に挿入
-    def stream_before(target, content = nil, &block)
-      turbo_stream.before(target, content, &block)
+    def stream_before(target, content = nil, &)
+      turbo_stream.before(target, content, &)
     end
 
     # 要素の後に挿入
-    def stream_after(target, content = nil, &block)
-      turbo_stream.after(target, content, &block)
+    def stream_after(target, content = nil, &)
+      turbo_stream.after(target, content, &)
     end
   end
 
   include StreamActions
 end
-

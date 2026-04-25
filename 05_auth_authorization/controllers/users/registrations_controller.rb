@@ -10,9 +10,6 @@ module Users
 
     # GET /users/sign_up
     # 登録フォームを表示
-    def new
-      super
-    end
 
     # POST /users
     # ユーザー登録処理
@@ -20,10 +17,10 @@ module Users
       super do |resource|
         if resource.persisted?
           # 登録成功時の追加処理
-          
+
           # ウェルカムメールを送信（オプション）
           # UserMailer.welcome_email(resource).deliver_later
-          
+
           # 登録ログを記録
           Rails.logger.info "New user registered: #{resource.email}"
         end
@@ -32,9 +29,6 @@ module Users
 
     # GET /users/edit
     # アカウント編集フォームを表示
-    def edit
-      super
-    end
 
     # PUT /users
     # アカウント更新処理
@@ -53,7 +47,7 @@ module Users
       super do |resource|
         # 削除成功時の追加処理
         Rails.logger.info "User deleted: #{resource.email}"
-        
+
         # 関連データのクリーンアップ（オプション）
         # cleanup_user_data(resource)
       end
@@ -61,33 +55,26 @@ module Users
 
     # GET /users/cancel
     # 登録キャンセル
-    def cancel
-      super
-    end
 
     protected
 
     # 登録時に許可するパラメータ
     def configure_sign_up_params
-      devise_parameter_sanitizer.permit(:sign_up, keys: [
-        :name,
-        :avatar
-      ])
+      devise_parameter_sanitizer.permit(:sign_up, keys: %i[name avatar])
     end
 
     # アカウント更新時に許可するパラメータ
     def configure_account_update_params
-      devise_parameter_sanitizer.permit(:account_update, keys: [
-        :name,
-        :avatar
-      ])
+      devise_parameter_sanitizer.permit(:account_update, keys: %i[name avatar])
     end
 
     # 登録後のリダイレクト先
     def after_sign_up_path_for(resource)
       # メール確認が必要な場合
       if resource.respond_to?(:confirmed?) && !resource.confirmed?
-        flash[:notice] = 'A confirmation email has been sent to your email address.'
+        flash[
+          :notice
+        ] = "A confirmation email has been sent to your email address."
         root_path
       else
         edit_user_registration_path
@@ -100,7 +87,7 @@ module Users
     end
 
     # アカウント更新後のリダイレクト先
-    def after_update_path_for(resource)
+    def after_update_path_for(_resource)
       if sign_in_after_change_password?
         edit_user_registration_path
       else
@@ -131,4 +118,3 @@ module Users
     end
   end
 end
-

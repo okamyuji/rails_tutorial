@@ -13,28 +13,31 @@ class Group < ApplicationRecord
 
   # バリデーション
   # グループ名は必須で、3文字以上100文字以内、ユニーク
-  validates :name, presence: true, 
-                   length: { minimum: 3, maximum: 100 },
-                   uniqueness: true
-  
+  validates :name,
+            presence: true,
+            length: {
+              minimum: 3,
+              maximum: 100
+            },
+            uniqueness: true
+
   # 説明は任意だが、設定する場合は10文字以上
   validates :description, length: { minimum: 10 }, allow_blank: true
 
   # スコープ
   # 新しい順に並べ替え
   scope :recent, -> { order(created_at: :desc) }
-  
+
   # グループ名で検索
-  scope :search_by_name, ->(query) {
-    where('name LIKE ?', "%#{query}%") if query.present?
-  }
+  scope :search_by_name,
+        ->(query) { where("name LIKE ?", "%#{query}%") if query.present? }
 
   # クラスメソッド
   # メンバー数が多い順に取得
   def self.popular(limit = 10)
     left_joins(:memberships)
       .group(:id)
-      .order('COUNT(memberships.id) DESC')
+      .order("COUNT(memberships.id) DESC")
       .limit(limit)
   end
 

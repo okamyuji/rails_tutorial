@@ -20,9 +20,7 @@ if user.valid?
   puts "✓ ユーザーを保存しました"
 else
   puts "✗ バリデーション失敗"
-  user.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  user.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -32,9 +30,7 @@ if user.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  user.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  user.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -44,9 +40,7 @@ if user.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  user.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  user.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -56,9 +50,7 @@ if user.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  user.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  user.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -73,9 +65,7 @@ if user.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  user.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  user.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -86,9 +76,7 @@ if user.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  user.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  user.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -101,19 +89,18 @@ puts "既存のメールアドレスでユーザーを作成:"
 existing_user = User.first
 if existing_user
   puts "既存ユーザー: #{existing_user.name} (#{existing_user.email})"
-  
-  duplicate_user = User.new(
-    name: "Duplicate User",
-    email: existing_user.email  # 既存のメールアドレスを使用
-  )
-  
+
+  duplicate_user =
+    User.new(
+      name: "Duplicate User",
+      email: existing_user.email # 既存のメールアドレスを使用
+    )
+
   if duplicate_user.valid?
     puts "✓ バリデーション成功"
   else
     puts "✗ バリデーション失敗"
-    duplicate_user.errors.full_messages.each do |message|
-      puts "  - #{message}"
-    end
+    duplicate_user.errors.full_messages.each { |message| puts "  - #{message}" }
   end
 else
   puts "既存のユーザーがありません。先にseed_data.rbを実行してください。"
@@ -125,53 +112,44 @@ puts "デモ4: 記事のバリデーション"
 puts "-" * 40
 puts ""
 
-user = User.first || User.create!(name: "Article Author", email: "author@example.com")
+user =
+  User.first ||
+    User.create!(name: "Article Author", email: "author@example.com")
 
 puts "正常な記事を作成:"
-article = user.articles.new(
-  title: "Valid Article Title",
-  content: "This is a valid article content with enough text.",
-  published: false
-)
+article =
+  user.articles.new(
+    title: "Valid Article Title",
+    content: "This is a valid article content with enough text.",
+    published: false
+  )
 if article.valid?
   puts "✓ バリデーション成功"
   article.save
   puts "✓ 記事を保存しました"
 else
   puts "✗ バリデーション失敗"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
 puts "タイトルが短すぎる記事:"
-article = user.articles.new(
-  title: "Hi",
-  content: "This is content"
-)
+article = user.articles.new(title: "Hi", content: "This is content")
 if article.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
 puts "本文が短すぎる記事:"
-article = user.articles.new(
-  title: "Valid Title Here",
-  content: "Short"
-)
+article = user.articles.new(title: "Valid Title Here", content: "Short")
 if article.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -181,57 +159,54 @@ puts "-" * 40
 puts ""
 
 puts "下書きの記事（published_at不要）:"
-article = user.articles.new(
-  title: "Draft Article",
-  content: "This is a draft article content.",
-  published: false,
-  published_at: nil
-)
+article =
+  user.articles.new(
+    title: "Draft Article",
+    content: "This is a draft article content.",
+    published: false,
+    published_at: nil
+  )
 if article.valid?
   puts "✓ バリデーション成功"
   article.save
   puts "✓ 下書き記事を保存しました"
 else
   puts "✗ バリデーション失敗"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
 puts "公開済みの記事（published_at必須）:"
-article = user.articles.new(
-  title: "Published Article",
-  content: "This is a published article content.",
-  published: true,
-  published_at: nil  # 公開済みなのに公開日時がない
-)
+article =
+  user.articles.new(
+    title: "Published Article",
+    content: "This is a published article content.",
+    published: true,
+    published_at: nil # 公開済みなのに公開日時がない
+  )
 if article.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
 puts "公開日時を設定した公開記事:"
-article = user.articles.new(
-  title: "Published Article with Date",
-  content: "This is a published article with proper date.",
-  published: true,
-  published_at: Time.current
-)
+article =
+  user.articles.new(
+    title: "Published Article with Date",
+    content: "This is a published article with proper date.",
+    published: true,
+    published_at: Time.current
+  )
 if article.valid?
   puts "✓ バリデーション成功"
   article.save
   puts "✓ 公開記事を保存しました"
 else
   puts "✗ バリデーション失敗"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
 end
 puts ""
 
@@ -241,43 +216,36 @@ puts "-" * 40
 puts ""
 
 puts "複数のバリデーションエラーがある記事:"
-article = user.articles.new(
-  title: "",
-  content: "Hi",
-  published: true,
-  published_at: nil
-)
+article =
+  user.articles.new(
+    title: "",
+    content: "Hi",
+    published: true,
+    published_at: nil
+  )
 
 if article.valid?
   puts "✓ バリデーション成功"
 else
   puts "✗ バリデーション失敗"
   puts ""
-  
+
   puts "すべてのエラーメッセージ:"
-  article.errors.full_messages.each do |message|
-    puts "  - #{message}"
-  end
+  article.errors.full_messages.each { |message| puts "  - #{message}" }
   puts ""
-  
+
   puts "属性別のエラー:"
-  article.errors.each do |error|
-    puts "  #{error.attribute}: #{error.message}"
-  end
+  article.errors.each { |error| puts "  #{error.attribute}: #{error.message}" }
   puts ""
-  
+
   puts "特定の属性のエラー:"
   if article.errors[:title].any?
     puts "  title:"
-    article.errors[:title].each do |message|
-      puts "    - #{message}"
-    end
+    article.errors[:title].each { |message| puts "    - #{message}" }
   end
   if article.errors[:content].any?
     puts "  content:"
-    article.errors[:content].each do |message|
-      puts "    - #{message}"
-    end
+    article.errors[:content].each { |message| puts "    - #{message}" }
   end
 end
 puts ""

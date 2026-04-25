@@ -11,7 +11,6 @@
 #
 # production:
 #   adapter: postgresql
-#   encoding: unicode
 #   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 #   url: <%= ENV['DATABASE_URL'] %>
 #
@@ -41,7 +40,7 @@
 
 # production:
 #   adapter: mysql2
-#   encoding: utf8mb4
+
 #   collation: utf8mb4_unicode_ci
 #   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 #   url: <%= ENV['DATABASE_URL'] %>
@@ -111,4 +110,3 @@
 
 # ActiveRecord::Base.connection.active?
 # ActiveRecord::Base.connection.execute("SELECT 1")
-

@@ -117,4 +117,3 @@
 #   end
 #   add_transaction_tracer :perform, category: :task
 # end
-

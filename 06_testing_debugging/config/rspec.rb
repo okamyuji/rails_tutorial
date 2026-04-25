@@ -30,13 +30,13 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
 
   # 失敗例の詳細出力
-  config.example_status_persistence_file_path = 'spec/examples.txt'
+  config.example_status_persistence_file_path = "spec/examples.txt"
 
   # `--only-failures`オプションを有効化
   config.filter_run_when_matching :focus
 
   # 単一ファイル実行時のフォーマット
-  config.default_formatter = 'doc' if config.files_to_run.one?
+  config.default_formatter = "doc" if config.files_to_run.one?
 
   # プロファイリング（遅いテストの特定）
   config.profile_examples = 10
@@ -79,4 +79,3 @@ RSpec.configure do |config|
   # バックトレースからRailsのフレームを除外
   config.filter_rails_from_backtrace!
 end
-

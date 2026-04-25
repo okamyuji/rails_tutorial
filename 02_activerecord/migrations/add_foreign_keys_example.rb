@@ -8,27 +8,27 @@ class AddForeignKeysExample < ActiveRecord::Migration[7.2]
     # 基本的な外部キー制約
     # articles テーブルの user_id が users テーブルの id を参照することを保証
     add_foreign_key :articles, :users
-    
+
     # comments テーブルの user_id が users テーブルの id を参照
     add_foreign_key :comments, :users
-    
+
     # comments テーブルの article_id が articles テーブルの id を参照
     add_foreign_key :comments, :articles
-    
+
     # 削除時の動作を指定した外部キー制約
     # on_delete: :cascade - 親レコードが削除されたら子レコードも削除
     add_foreign_key :articles, :users, on_delete: :cascade
-    
+
     # on_delete: :nullify - 親レコードが削除されたら外部キーをNULLに設定
     # add_foreign_key :comments, :users, on_delete: :nullify
-    
+
     # on_delete: :restrict - 子レコードが存在する場合、親レコードの削除を防ぐ
     # add_foreign_key :comments, :articles, on_delete: :restrict
-    
+
     # カラム名が規約に従わない場合
     # column オプションで外部キーカラム名を明示的に指定
     # add_foreign_key :articles, :users, column: :author_id, primary_key: :id
-    
+
     # 複合外部キー（Rails 7.1以降）
     # add_foreign_key :line_items, :orders, column: [:shop_id, :order_id], primary_key: [:shop_id, :id]
   end

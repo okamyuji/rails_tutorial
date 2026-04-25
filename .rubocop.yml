@@ -1,0 +1,113 @@
+# Rubocop configuration for tutorial sample code.
+# 解説目的のため、一部の厳しすぎるcopは緩めています。
+
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "**/db/schema.rb"
+    - "**/bin/**/*"
+    - "**/vendor/**/*"
+    - "**/node_modules/**/*"
+    - "**/tmp/**/*"
+
+# ---- レイアウト ----
+Layout/LineLength:
+  Max: 140
+
+# ---- メトリクス（デモ用なので緩め） ----
+Metrics/BlockLength:
+  Enabled: false
+Metrics/MethodLength:
+  Max: 60
+Metrics/AbcSize:
+  Max: 60
+Metrics/ClassLength:
+  Max: 400
+Metrics/ModuleLength:
+  Max: 400
+Metrics/CyclomaticComplexity:
+  Max: 15
+Metrics/PerceivedComplexity:
+  Max: 15
+Metrics/ParameterLists:
+  Max: 8
+
+# ---- スタイル ----
+Style/Documentation:
+  Enabled: false
+# streeに合わせて double_quotes
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+Style/QuotedSymbols:
+  EnforcedStyle: double_quotes
+# フォーマットに関するレイアウト系copは stree(Syntax Tree) に委ねるため無効化
+Layout/IndentationConsistency:
+  Enabled: false
+Layout/IndentationWidth:
+  Enabled: false
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+Layout/MultilineOperationIndentation:
+  Enabled: false
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: false
+Layout/ArgumentAlignment:
+  Enabled: false
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+Layout/FirstHashElementIndentation:
+  Enabled: false
+Layout/FirstArgumentIndentation:
+  Enabled: false
+Layout/HashAlignment:
+  Enabled: false
+Layout/ClosingParenthesisIndentation:
+  Enabled: false
+Layout/MultilineHashBraceLayout:
+  Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/SingleLineDoEndBlock:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/HashSyntax:
+  EnforcedShorthandSyntax: either
+Style/AsciiComments:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+
+# ---- Lint ----
+Lint/MissingSuper:
+  Enabled: false
+Lint/UselessAssignment:
+  Enabled: false  # デモ用の解説目的の代入があるため
+
+# ---- Naming ----
+Naming/AccessorMethodName:
+  Enabled: false
+Naming/MethodParameterName:
+  MinNameLength: 1
+Naming/PredicatePrefix:
+  AllowedMethods:
+    - has_member?
+    - has_permission?
+Naming/FileName:
+  Exclude:
+    - "07_deployment_operations/github_actions/Gemfile.snippet.rb"
+
+# ---- 解説目的のため複数classを1ファイルに置くケースを許容 ----
+Style/OneClassPerFile:
+  Exclude:
+    - "02_activerecord/migrations/strong_migrations_example.rb"

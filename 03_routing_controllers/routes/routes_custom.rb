@@ -8,21 +8,21 @@ Rails.application.routes.draw do
       resources :articles do
         # member: 特定のリソースに対する操作（:idが必要）
         member do
-          post :publish      # POST /api/v1/articles/:id/publish
-          post :unpublish    # POST /api/v1/articles/:id/unpublish
+          post :publish # POST /api/v1/articles/:id/publish
+          post :unpublish # POST /api/v1/articles/:id/unpublish
         end
-        
+
         # collection: リソース全体に対する操作（:idは不要）
         collection do
-          get :published     # GET /api/v1/articles/published
-          get :drafts        # GET /api/v1/articles/drafts
+          get :published # GET /api/v1/articles/published
+          get :drafts # GET /api/v1/articles/drafts
         end
-        
+
         # コメントをネスト
-        resources :comments, only: [:index, :create]
+        resources :comments, only: %i[index create]
       end
-      
-      resources :comments, only: [:show, :update, :destroy]
+
+      resources :comments, only: %i[show update destroy]
       resources :users
     end
   end

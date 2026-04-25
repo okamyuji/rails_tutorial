@@ -57,9 +57,7 @@ FactoryBot.define do
 
     # トレイト: コメント付き
     trait :with_comments do
-      transient do
-        comments_count { 3 }
-      end
+      transient { comments_count { 3 } }
 
       after(:create) do |article, evaluator|
         create_list(:comment, evaluator.comments_count, article: article)
@@ -68,9 +66,7 @@ FactoryBot.define do
 
     # トレイト: タグ付き
     trait :with_tags do
-      transient do
-        tags_count { 2 }
-      end
+      transient { tags_count { 2 } }
 
       after(:create) do |article, evaluator|
         if article.respond_to?(:tags)
@@ -82,11 +78,11 @@ FactoryBot.define do
 
     # トレイト: 特定のユーザーの記事
     trait :by_admin do
-      association :user, factory: [:user, :admin]
+      association :user, factory: %i[user admin]
     end
 
     trait :by_editor do
-      association :user, factory: [:user, :editor]
+      association :user, factory: %i[user editor]
     end
 
     # ファクトリ: 公開記事
@@ -96,7 +92,7 @@ FactoryBot.define do
     factory :featured_article, traits: [:featured]
 
     # ファクトリ: コメント付き公開記事
-    factory :published_article_with_comments, traits: [:published, :with_comments]
+    factory :published_article_with_comments,
+            traits: %i[published with_comments]
   end
 end
-

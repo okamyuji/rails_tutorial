@@ -7,9 +7,8 @@
 OmniAuth.config.logger = Rails.logger
 
 # 失敗時のエンドポイント
-OmniAuth.config.on_failure = proc do |env|
-  OmniAuth::FailureEndpoint.new(env).redirect_to_failure
-end
+OmniAuth.config.on_failure =
+  proc { |env| OmniAuth::FailureEndpoint.new(env).redirect_to_failure }
 
 # テスト環境でのモック設定
 if Rails.env.test?
@@ -17,49 +16,49 @@ if Rails.env.test?
 
   # テスト用のモックデータ
   OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
-    provider: 'google_oauth2',
-    uid: '123456789',
+    provider: "google_oauth2",
+    uid: "123456789",
     info: {
-      email: 'test@example.com',
-      name: 'Test User',
-      first_name: 'Test',
-      last_name: 'User',
-      image: 'https://example.com/avatar.jpg'
+      email: "test@example.com",
+      name: "Test User",
+      first_name: "Test",
+      last_name: "User",
+      image: "https://example.com/avatar.jpg"
     },
     credentials: {
-      token: 'mock_token',
-      refresh_token: 'mock_refresh_token',
+      token: "mock_token",
+      refresh_token: "mock_refresh_token",
       expires_at: 1.week.from_now.to_i,
       expires: true
     }
   )
 
   OmniAuth.config.mock_auth[:facebook] = OmniAuth::AuthHash.new(
-    provider: 'facebook',
-    uid: '987654321',
+    provider: "facebook",
+    uid: "987654321",
     info: {
-      email: 'facebook@example.com',
-      name: 'Facebook User',
-      image: 'https://example.com/fb_avatar.jpg'
+      email: "facebook@example.com",
+      name: "Facebook User",
+      image: "https://example.com/fb_avatar.jpg"
     },
     credentials: {
-      token: 'mock_fb_token',
+      token: "mock_fb_token",
       expires_at: 1.week.from_now.to_i,
       expires: true
     }
   )
 
   OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(
-    provider: 'github',
-    uid: '456789123',
+    provider: "github",
+    uid: "456789123",
     info: {
-      email: 'github@example.com',
-      name: 'GitHub User',
-      nickname: 'githubuser',
-      image: 'https://example.com/gh_avatar.jpg'
+      email: "github@example.com",
+      name: "GitHub User",
+      nickname: "githubuser",
+      image: "https://example.com/gh_avatar.jpg"
     },
     credentials: {
-      token: 'mock_gh_token',
+      token: "mock_gh_token",
       expires: false
     }
   )
@@ -70,15 +69,15 @@ end
 module OmniAuthConfig
   class << self
     def google_oauth2_configured?
-      ENV['GOOGLE_CLIENT_ID'].present? && ENV['GOOGLE_CLIENT_SECRET'].present?
+      ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_SECRET"].present?
     end
 
     def facebook_configured?
-      ENV['FACEBOOK_APP_ID'].present? && ENV['FACEBOOK_APP_SECRET'].present?
+      ENV["FACEBOOK_APP_ID"].present? && ENV["FACEBOOK_APP_SECRET"].present?
     end
 
     def github_configured?
-      ENV['GITHUB_CLIENT_ID'].present? && ENV['GITHUB_CLIENT_SECRET'].present?
+      ENV["GITHUB_CLIENT_ID"].present? && ENV["GITHUB_CLIENT_SECRET"].present?
     end
 
     def any_provider_configured?
@@ -118,4 +117,3 @@ end
 #   2. New OAuth Appを作成
 #   3. Authorization callback URLを設定
 #   4. クライアントIDとシークレットを環境変数に設定
-

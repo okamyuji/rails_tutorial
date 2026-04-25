@@ -27,8 +27,10 @@
 │   ├── service.yml             # サービス
 │   └── configmap.yml           # 設定マップ
 ├── github_actions/              # CI/CD
-│   ├── ci.yml                  # CIワークフロー
-│   └── deploy.yml              # デプロイワークフロー
+│   ├── ci.yml                  # CIワークフロー（lint/typecheck/security/secrets/test）
+│   ├── deploy.yml              # デプロイワークフロー（マイグレーション前にRDSスナップショット）
+│   ├── pre-commit-config.yaml  # ローカル用 pre-commit 設定
+│   └── Gemfile.snippet.rb      # 自動化ツール群のGemfileスニペット
 ├── monitoring/                  # 監視設定
 │   ├── newrelic.rb             # New Relic設定
 │   ├── sentry.rb               # Sentry設定
@@ -78,21 +80,35 @@ RUN bundle install
 CMD ["rails", "server", "-b", "0.0.0.0"]
 ```
 
-### 3. GitHub Actions CI
+### 3. GitHub Actions CI（自動化スタック）
 
-```yaml
-name: CI
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-      - run: bundle exec rspec
+CIで以下を並列ジョブとして実行し、テスト・静的解析・型・セキュリティ・秘密情報の検査を自動化します。
+
+| ジョブ | 内容 |
+| --- | --- |
+| `lint` | rubocop / stree（Syntax Tree）/ erb-lint |
+| `typecheck` | sorbet（`srb tc`） |
+| `security` | brakeman / bundler-audit |
+| `secrets` | gitleaks（履歴スキャン） |
+| `test` | rspec + simplecov閾値 + bullet `raise=true` でN+1自動失敗 |
+| `pre-migrate-snapshot` | 本番デプロイ前にRDSスナップショットを自動作成 |
+
+詳細は [github_actions/ci.yml](github_actions/ci.yml) と [github_actions/deploy.yml](github_actions/deploy.yml) を参照してください。
+
+### 4. ローカルでも同じチェックを走らせる（pre-commit）
+
+CIで落ちる前にコミット時点で気づけるよう、[pre-commit](https://pre-commit.com/) フレームワークで同じツール群を実行します。
+
+```bash
+brew install pre-commit
+cp 07_deployment_operations/github_actions/pre-commit-config.yaml .pre-commit-config.yaml
+pre-commit install
 ```
 
-### 4. 監視とログ
+設定済みのフック: gitleaks / rubocop / stree / erb-lint / brakeman / bundler-audit。
+sorbet を導入済みの場合は `pre-commit-config.yaml` のコメントを外して有効化します。
+
+### 5. 監視とログ
 
 ```ruby
 # Sentry

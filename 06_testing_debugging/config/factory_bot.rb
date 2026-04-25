@@ -9,9 +9,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   # ファクトリの定義をリロード（開発時に便利）
-  config.before(:suite) do
-    FactoryBot.reload
-  end
+  config.before(:suite) { FactoryBot.reload }
 
   # Lint（ファクトリの検証）
   # config.before(:suite) do
@@ -50,4 +48,3 @@ end
 # end
 #
 # FactoryBot.register_strategy(:json, JsonStrategy)
-

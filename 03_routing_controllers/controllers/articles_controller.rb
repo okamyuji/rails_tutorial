@@ -7,42 +7,54 @@
 module Api
   module V1
     class ArticlesController < ApplicationController
-      before_action :set_article, only: [:show, :update, :destroy]
+      before_action :set_article, only: %i[show update destroy]
 
       # GET /api/v1/articles
       # 記事の一覧を取得します
       def index
         @articles = Article.includes(:user).order(created_at: :desc)
-        
+
         # ページネーション
         @articles = @articles.page(params[:page]).per(params[:per_page] || 20)
-        
+
         render json: {
-          articles: @articles.as_json(include: { user: { only: [:id, :name] } }),
-          meta: pagination_meta(@articles)
-        }
+                 articles:
+                   @articles.as_json(include: { user: { only: %i[id name] } }),
+                 meta: pagination_meta(@articles)
+               }
       end
 
       # GET /api/v1/articles/:id
       # 特定の記事を取得します
       def show
-        render json: @article.as_json(
-          include: {
-            user: { only: [:id, :name, :email] },
-            comments: { include: { user: { only: [:id, :name] } } }
-          }
-        )
+        render json:
+                 @article.as_json(
+                   include: {
+                     user: {
+                       only: %i[id name email]
+                     },
+                     comments: {
+                       include: {
+                         user: {
+                           only: %i[id name]
+                         }
+                       }
+                     }
+                   }
+                 )
       end
 
       # POST /api/v1/articles
       # 新しい記事を作成します
       def create
         @article = Article.new(article_params)
-        
+
         if @article.save
           render json: @article, status: :created
         else
-          render json: { errors: format_errors(@article.errors) }, 
+          render json: {
+                   errors: format_errors(@article.errors)
+                 },
                  status: :unprocessable_entity
         end
       end
@@ -53,7 +65,9 @@ module Api
         if @article.update(article_params)
           render json: @article
         else
-          render json: { errors: format_errors(@article.errors) }, 
+          render json: {
+                   errors: format_errors(@article.errors)
+                 },
                  status: :unprocessable_entity
         end
       end
@@ -70,11 +84,13 @@ module Api
       # 記事を公開します
       def publish
         @article = Article.find(params[:id])
-        
+
         if @article.update(published: true, published_at: Time.current)
           render json: @article
         else
-          render json: { errors: format_errors(@article.errors) }, 
+          render json: {
+                   errors: format_errors(@article.errors)
+                 },
                  status: :unprocessable_entity
         end
       end
@@ -83,11 +99,13 @@ module Api
       # 記事を非公開にします
       def unpublish
         @article = Article.find(params[:id])
-        
+
         if @article.update(published: false, published_at: nil)
           render json: @article
         else
-          render json: { errors: format_errors(@article.errors) }, 
+          render json: {
+                   errors: format_errors(@article.errors)
+                 },
                  status: :unprocessable_entity
         end
       end
@@ -95,13 +113,16 @@ module Api
       # GET /api/v1/articles/published
       # 公開済みの記事のみを取得します
       def published
-        @articles = Article.where(published: true)
-                          .includes(:user)
-                          .order(published_at: :desc)
-        
+        @articles =
+          Article
+            .where(published: true)
+            .includes(:user)
+            .order(published_at: :desc)
+
         render json: {
-          articles: @articles.as_json(include: { user: { only: [:id, :name] } })
-        }
+                 articles:
+                   @articles.as_json(include: { user: { only: %i[id name] } })
+               }
       end
 
       private
@@ -110,7 +131,7 @@ module Api
       def set_article
         @article = Article.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: 'Article not found' }, status: :not_found
+        render json: { error: "Article not found" }, status: :not_found
       end
 
       # Strong Parameters
@@ -122,10 +143,7 @@ module Api
       # エラーメッセージを整形します
       def format_errors(errors)
         errors.map do |error|
-          {
-            field: error.attribute,
-            message: error.full_message
-          }
+          { field: error.attribute, message: error.full_message }
         end
       end
 

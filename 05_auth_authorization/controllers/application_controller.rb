@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
 
     flash[:alert] = t(
       "pundit.#{policy_name}.#{exception.query}",
-      default: 'You are not authorized to perform this action.'
+      default: "You are not authorized to perform this action."
     )
 
     redirect_back(fallback_location: root_path)
@@ -42,17 +42,17 @@ class ApplicationController < ActionController::Base
 
   # レコードが見つからない場合の処理
   def record_not_found
-    flash[:alert] = 'The requested resource was not found.'
+    flash[:alert] = "The requested resource was not found."
     redirect_back(fallback_location: root_path)
   end
 
   # Deviseのパラメータ設定
   def configure_permitted_parameters
     # サインアップ時に許可するパラメータ
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :avatar])
+    devise_parameter_sanitizer.permit(:sign_up, keys: %i[name avatar])
 
     # アカウント更新時に許可するパラメータ
-    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :avatar])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[name avatar])
   end
 
   # 現在のユーザーを取得（Deviseのヘルパー）
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   # 管理者のみアクセス可能
   def require_admin!
     unless current_user&.admin?
-      flash[:alert] = 'Admin access required.'
+      flash[:alert] = "Admin access required."
       redirect_to root_path
     end
   end
@@ -82,9 +82,8 @@ class ApplicationController < ActionController::Base
   # 編集者以上のみアクセス可能
   def require_editor_or_above!
     unless current_user&.editor? || current_user&.admin?
-      flash[:alert] = 'Editor access required.'
+      flash[:alert] = "Editor access required."
       redirect_to root_path
     end
   end
 end
-

@@ -9,7 +9,7 @@ puts "=" * 80
 puts ""
 
 # データが存在するか確認
-if User.count == 0
+if User.none?
   puts "エラー: サンプルデータが存在しません"
   puts "まず seed_data.rb を実行してください"
   exit 1
@@ -22,7 +22,7 @@ puts ""
 puts "公開済みの記事を新しい順に5件取得:"
 articles = Article.published.recent.limit(5)
 articles.each do |article|
-  puts "  - #{article.title} (#{article.published_at.strftime('%Y-%m-%d')})"
+  puts "  - #{article.title} (#{article.published_at.strftime("%Y-%m-%d")})"
 end
 puts ""
 
@@ -32,9 +32,7 @@ puts ""
 
 puts "成人ユーザーを最近登録順に取得:"
 users = User.adult.recent.limit(5)
-users.each do |user|
-  puts "  - #{user.name} (#{user.age}歳)"
-end
+users.each { |user| puts "  - #{user.name} (#{user.age}歳)" }
 puts ""
 
 puts "=" * 80
@@ -45,22 +43,23 @@ puts ""
 puts "joins: 公開済み記事を持つユーザーを取得（記事データは取得しない）"
 users = User.joins(:articles).where(articles: { published: true }).distinct
 puts "取得したユーザー数: #{users.count}"
-users.limit(3).each do |user|
-  puts "  - #{user.name}"
-end
+users.limit(3).each { |user| puts "  - #{user.name}" }
 puts ""
 
 puts "実行されたSQL:"
-puts User.joins(:articles).where(articles: { published: true }).distinct.limit(3).to_sql
+puts User
+       .joins(:articles)
+       .where(articles: { published: true })
+       .distinct
+       .limit(3)
+       .to_sql
 puts ""
 
 puts "includes: ユーザーと記事データの両方を取得"
 users = User.includes(:articles).limit(3)
 users.each do |user|
   puts "  - #{user.name}: #{user.articles.count} articles"
-  user.articles.first(2).each do |article|
-    puts "      - #{article.title}"
-  end
+  user.articles.first(2).each { |article| puts "      - #{article.title}" }
 end
 puts ""
 
@@ -72,19 +71,15 @@ puts ""
 puts "すべてのカラムを取得:"
 users = User.limit(3)
 puts "取得したデータ:"
-users.each do |user|
-  puts "  - #{user.attributes.keys.join(', ')}"
-  break  # 1件だけ表示
-end
+sample_user = users.first
+puts "  - #{sample_user.attributes.keys.join(", ")}" if sample_user
 puts ""
 
 puts "必要なカラムのみを取得:"
 users = User.select(:id, :name, :email).limit(3)
 puts "取得したデータ:"
-users.each do |user|
-  puts "  - #{user.attributes.keys.join(', ')}"
-  break  # 1件だけ表示
-end
+sample_user = users.first
+puts "  - #{sample_user.attributes.keys.join(", ")}" if sample_user
 puts ""
 
 puts "実行されたSQL:"
@@ -103,9 +98,7 @@ puts ""
 
 puts "IDとメールアドレスのハッシュを取得:"
 user_data = User.limit(5).pluck(:id, :email)
-user_data.each do |id, email|
-  puts "  ID: #{id}, Email: #{email}"
-end
+user_data.each { |id, email| puts "  ID: #{id}, Email: #{email}" }
 puts ""
 
 puts "pluckの利点:"
@@ -122,7 +115,7 @@ puts ""
 first_user = User.first
 
 puts "記事の存在確認（count使用）:"
-has_articles_count = first_user.articles.count > 0
+has_articles_count = first_user.articles.any?
 puts "  結果: #{has_articles_count}"
 puts "  問題: countはすべてのレコードを数える"
 puts ""
@@ -134,7 +127,7 @@ puts "  利点: 1件でも見つかれば即座に返る"
 puts ""
 
 puts "実行されたSQL（exists）:"
-puts first_user.articles.exists?.to_s
+puts first_user.articles.exists?
 puts ""
 
 puts "=" * 80
@@ -217,10 +210,8 @@ puts "-" * 40
 puts ""
 
 puts "複数のスコープを組み合わせる:"
-articles = Article.published.recent
-  .joins(:user)
-  .where(users: { age: 20..30 })
-  .limit(5)
+articles =
+  Article.published.recent.joins(:user).where(users: { age: 20..30 }).limit(5)
 
 puts "実行されたSQL:"
 puts articles.to_sql

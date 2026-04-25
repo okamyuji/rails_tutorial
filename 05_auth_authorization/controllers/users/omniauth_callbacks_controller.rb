@@ -7,17 +7,17 @@ module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # Google OAuth2のコールバック
     def google_oauth2
-      handle_auth('Google')
+      handle_auth("Google")
     end
 
     # Facebookのコールバック
     def facebook
-      handle_auth('Facebook')
+      handle_auth("Facebook")
     end
 
     # GitHubのコールバック
     def github
-      handle_auth('GitHub')
+      handle_auth("GitHub")
     end
 
     # 認証失敗時
@@ -32,20 +32,23 @@ module Users
     #
     # @param provider [String] プロバイダ名
     def handle_auth(provider)
-      auth = request.env['omniauth.auth']
+      auth = request.env["omniauth.auth"]
       @user = User.from_omniauth(auth)
 
       if @user.persisted?
         # 認証成功
         sign_in_and_redirect @user, event: :authentication
-        set_flash_message(:notice, :success, kind: provider) if is_navigational_format?
-        
+        if is_navigational_format?
+          set_flash_message(:notice, :success, kind: provider)
+        end
+
         # ログを記録
         Rails.logger.info "User signed in via #{provider}: #{@user.email}"
       else
         # ユーザー作成に失敗
-        session['devise.oauth_data'] = auth.except(:extra)
-        redirect_to new_user_registration_url, alert: @user.errors.full_messages.join("\n")
+        session["devise.oauth_data"] = auth.except(:extra)
+        redirect_to new_user_registration_url,
+                    alert: @user.errors.full_messages.join("\n")
       end
     end
 
@@ -53,17 +56,18 @@ module Users
     #
     # @return [String]
     def failure_message
-      exception = request.env['omniauth.error']
-      error_type = request.env['omniauth.error.type']
-      strategy = request.env['omniauth.error.strategy']
+      exception = request.env["omniauth.error"]
+      error_type = request.env["omniauth.error.type"]
+      strategy = request.env["omniauth.error.strategy"]
 
-      message = if exception
-                  "Authentication failed: #{exception.message}"
-                elsif error_type
-                  "Authentication failed: #{error_type.to_s.humanize}"
-                else
-                  'Authentication failed for unknown reason.'
-                end
+      message =
+        if exception
+          "Authentication failed: #{exception.message}"
+        elsif error_type
+          "Authentication failed: #{error_type.to_s.humanize}"
+        else
+          "Authentication failed for unknown reason."
+        end
 
       # ログを記録
       Rails.logger.warn "OAuth failure: #{message} (strategy: #{strategy&.name})"
@@ -82,4 +86,3 @@ module Users
     end
   end
 end
-

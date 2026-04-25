@@ -8,8 +8,8 @@ FactoryBot.define do
     # 基本属性
     name { Faker::Name.name }
     sequence(:email) { |n| "user#{n}@example.com" }
-    password { 'password123' }
-    password_confirmation { 'password123' }
+    password { "password123" }
+    password_confirmation { "password123" }
     role { :member }
 
     # Confirmable対応
@@ -43,9 +43,7 @@ FactoryBot.define do
 
     # トレイト: 記事を持つユーザー
     trait :with_articles do
-      transient do
-        articles_count { 3 }
-      end
+      transient { articles_count { 3 } }
 
       after(:create) do |user, evaluator|
         create_list(:article, evaluator.articles_count, user: user)
@@ -54,9 +52,7 @@ FactoryBot.define do
 
     # トレイト: 公開記事を持つユーザー
     trait :with_published_articles do
-      transient do
-        articles_count { 3 }
-      end
+      transient { articles_count { 3 } }
 
       after(:create) do |user, evaluator|
         create_list(:article, evaluator.articles_count, :published, user: user)
@@ -65,9 +61,7 @@ FactoryBot.define do
 
     # トレイト: コメントを持つユーザー
     trait :with_comments do
-      transient do
-        comments_count { 5 }
-      end
+      transient { comments_count { 5 } }
 
       after(:create) do |user, evaluator|
         create_list(:comment, evaluator.comments_count, user: user)
@@ -76,14 +70,13 @@ FactoryBot.define do
 
     # トレイト: OmniAuth認証ユーザー
     trait :from_google do
-      provider { 'google_oauth2' }
+      provider { "google_oauth2" }
       uid { SecureRandom.uuid }
     end
 
     trait :from_github do
-      provider { 'github' }
+      provider { "github" }
       uid { SecureRandom.uuid }
     end
   end
 end
-
