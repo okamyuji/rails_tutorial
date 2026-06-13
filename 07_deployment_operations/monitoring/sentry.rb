@@ -39,19 +39,14 @@ Sentry.init do |config|
     ActionController::UnknownFormat
   ]
 
-  # 機密情報のフィルタリング
+  # 機密情報のフィルタリングとコンテキストの追加
   config.before_send =
     lambda do |event, _hint|
       # パスワードなどをフィルタリング
       if event.request&.data
         event.request.data = filter_sensitive_data(event.request.data)
       end
-      event
-    end
 
-  # コンテキストの追加
-  config.before_send =
-    lambda do |event, _hint|
       # ユーザー情報を追加（ログイン中の場合）
       if defined?(current_user) && current_user
         event.user = {

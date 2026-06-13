@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_support/all"
+
 # このスクリプトは、ActiveSupportが提供する便利なメソッドを
 # デモンストレーションします。RailsがどのようにRubyを拡張して
 # いるかを理解できます。

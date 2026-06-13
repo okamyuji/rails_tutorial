@@ -4,7 +4,7 @@
 # ============================================================
 # Stage 1: Builder
 # ============================================================
-FROM ruby:3.2-slim AS builder
+FROM ruby:3.3-slim AS builder
 
 # Install build dependencies
 RUN apt-get update -qq && \
@@ -47,7 +47,7 @@ RUN RAILS_ENV=production \
 # ============================================================
 # Stage 2: Runtime
 # ============================================================
-FROM ruby:3.2-slim AS runtime
+FROM ruby:3.3-slim AS runtime
 
 # Install runtime dependencies
 RUN apt-get update -qq && \

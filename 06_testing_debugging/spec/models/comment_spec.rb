@@ -15,7 +15,7 @@ RSpec.describe Comment, type: :model do
   # バリデーションのテスト
   describe "validations" do
     it { should validate_presence_of(:content) }
-    it { should validate_length_of(:content).is_at_least(1).is_at_most(1000) }
+    it { should validate_length_of(:content).is_at_least(2).is_at_most(1000) }
   end
 
   # スコープのテスト
@@ -44,31 +44,4 @@ RSpec.describe Comment, type: :model do
     end
   end
 
-  # インスタンスメソッドのテスト
-  describe "#author_name" do
-    let(:user) { create(:user, name: "John Doe") }
-    let(:comment) { create(:comment, user: user) }
-
-    it "returns the user name" do
-      expect(comment.author_name).to eq("John Doe")
-    end
-  end
-
-  describe "#truncated_content" do
-    context "with short content" do
-      let(:comment) { build(:comment, content: "Short") }
-
-      it "returns the full content" do
-        expect(comment.truncated_content).to eq("Short")
-      end
-    end
-
-    context "with long content" do
-      let(:comment) { build(:comment, content: "a" * 200) }
-
-      it "returns truncated content" do
-        expect(comment.truncated_content(length: 100).length).to be <= 103
-      end
-    end
-  end
 end

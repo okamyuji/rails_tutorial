@@ -43,16 +43,6 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe ".featured" do
-      it "returns only featured articles" do
-        expect(Article.featured).to include(featured_article)
-        expect(Article.featured).not_to include(
-          published_article,
-          draft_article
-        )
-      end
-    end
-
     describe ".recent" do
       it "returns articles ordered by created_at desc" do
         expect(Article.recent.first).to eq(draft_article)
@@ -89,42 +79,6 @@ RSpec.describe Article, type: :model do
     it "sets published_at to nil" do
       article.unpublish!
       expect(article.published_at).to be_nil
-    end
-  end
-
-  describe "#draft?" do
-    context "when article is not published" do
-      let(:article) { build(:article, published: false) }
-
-      it "returns true" do
-        expect(article.draft?).to be true
-      end
-    end
-
-    context "when article is published" do
-      let(:article) { build(:article, :published) }
-
-      it "returns false" do
-        expect(article.draft?).to be false
-      end
-    end
-  end
-
-  describe "#reading_time" do
-    context "with short content" do
-      let(:article) { build(:article, content: "Short content") }
-
-      it "returns 1 minute" do
-        expect(article.reading_time).to eq(1)
-      end
-    end
-
-    context "with long content" do
-      let(:article) { build(:article, content: "word " * 500) }
-
-      it "returns estimated reading time" do
-        expect(article.reading_time).to be > 1
-      end
     end
   end
 

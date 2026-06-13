@@ -30,7 +30,7 @@ Datadog.configure do |c|
   c.tracing.instrument :sidekiq
 
   # HTTP
-  c.tracing.instrument :http
+  c.tracing.instrument :net_http
   c.tracing.instrument :faraday
   c.tracing.instrument :httpclient
 

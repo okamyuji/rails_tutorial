@@ -12,21 +12,6 @@ FactoryBot.define do
     # 基本属性
     content { Faker::Lorem.paragraph }
 
-    # トレイト: 承認済み
-    trait :approved do
-      approved { true } if respond_to?(:approved=)
-    end
-
-    # トレイト: 未承認
-    trait :pending do
-      approved { false } if respond_to?(:approved=)
-    end
-
-    # トレイト: 報告済み
-    trait :reported do
-      reported { true } if respond_to?(:reported=)
-    end
-
     # トレイト: 長いコメント
     trait :long do
       content { Faker::Lorem.paragraphs(number: 5).join("\n\n") }
@@ -59,7 +44,5 @@ FactoryBot.define do
       association :article, factory: %i[article published]
     end
 
-    # ファクトリ: 承認済みコメント
-    factory :approved_comment, traits: [:approved]
   end
 end

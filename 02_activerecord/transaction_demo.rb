@@ -201,7 +201,7 @@ User.transaction do
   puts "  ✓ ユーザーを作成: #{user.name}"
 
   begin
-    User.transaction do
+    User.transaction(requires_new: true) do
       puts "  子トランザクション開始"
 
       article =

@@ -96,7 +96,7 @@ class Article < ApplicationRecord
 
   # 公開日時が過去でないことを検証
   def published_at_cannot_be_in_the_past
-    if published_at.present? && published_at < Time.current
+    if published_at.present? && published_at < 1.minute.ago
       errors.add(:published_at, "cannot be in the past")
     end
   end
