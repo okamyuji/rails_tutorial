@@ -20,7 +20,7 @@
 │   └── lograge.rb              # ログ設定
 ├── docker/                      # Docker関連
 │   ├── Dockerfile              # Dockerfile
-│   ├── docker-compose.yml      # Docker Compose
+│   ├── compose.yml             # Docker Compose
 │   └── .dockerignore           # Docker除外設定
 ├── kubernetes/                  # Kubernetes関連
 │   ├── deployment.yml          # デプロイメント

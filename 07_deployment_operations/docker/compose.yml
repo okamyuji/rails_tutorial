@@ -106,22 +106,22 @@ volumes:
 # ============================================================
 #
 # # Build and start
-# docker-compose up --build
+# docker compose up --build
 #
 # # Run in background
-# docker-compose up -d
+# docker compose up -d
 #
 # # View logs
-# docker-compose logs -f web
+# docker compose logs -f web
 #
 # # Run rails commands
-# docker-compose run web rails db:create
-# docker-compose run web rails db:migrate
-# docker-compose run web rails console
+# docker compose run web rails db:create
+# docker compose run web rails db:migrate
+# docker compose run web rails console
 #
 # # Stop services
-# docker-compose down
+# docker compose down
 #
 # # Remove volumes
-# docker-compose down -v
+# docker compose down -v
 

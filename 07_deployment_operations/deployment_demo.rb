@@ -191,7 +191,7 @@ docker_info = <<~TEXT
 
   CMD ["rails", "server", "-b", "0.0.0.0"]
 
-  ■ docker-compose.yml
+  ■ compose.yml
 
   version: '3.8'
 
@@ -220,9 +220,9 @@ docker_info = <<~TEXT
 
   ■ コマンド
 
-  docker-compose build
-  docker-compose up
-  docker-compose run web rails db:create db:migrate
+  docker compose build
+  docker compose up
+  docker compose run web rails db:create db:migrate
 TEXT
 
 puts docker_info
