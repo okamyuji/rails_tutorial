@@ -2,7 +2,9 @@ class Article < ApplicationRecord
   belongs_to :user, counter_cache: true
   has_many :comments, dependent: :destroy
   has_many :images, dependent: :destroy
-  accepts_nested_attributes_for :images, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :images,
+                                allow_destroy: true,
+                                reject_if: :all_blank
 
   validates :title, presence: true, length: { minimum: 5, maximum: 200 }
   validates :content, presence: true, length: { minimum: 10 }

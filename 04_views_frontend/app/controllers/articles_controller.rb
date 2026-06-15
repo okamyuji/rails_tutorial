@@ -57,7 +57,9 @@ class ArticlesController < ApplicationController
     @article.destroy
 
     respond_to do |format|
-      format.html { redirect_to articles_path, notice: "記事を削除しました。", status: :see_other }
+      format.html do
+        redirect_to articles_path, notice: "記事を削除しました。", status: :see_other
+      end
       format.turbo_stream
     end
   end

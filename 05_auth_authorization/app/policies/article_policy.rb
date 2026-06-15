@@ -23,11 +23,7 @@ class ArticlePolicy < ApplicationPolicy
 
   class Scope < Scope
     def resolve
-      if user&.admin?
-        scope.all
-      else
-        scope.where(published: true)
-      end
+      user&.admin? ? scope.all : scope.where(published: true)
     end
   end
 end

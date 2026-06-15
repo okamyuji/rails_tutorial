@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  skip_forgery_protection
+  protect_from_forgery with: :null_session
 
   before_action :set_article, only: %i[show edit update destroy]
 
@@ -42,7 +42,12 @@ class ArticlesController < ApplicationController
     else
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { errors: @article.errors }, status: :unprocessable_entity }
+        format.json do
+          render json: {
+                   errors: @article.errors
+                 },
+                 status: :unprocessable_entity
+        end
       end
     end
   end
@@ -57,7 +62,12 @@ class ArticlesController < ApplicationController
     else
       respond_to do |format|
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: { errors: @article.errors }, status: :unprocessable_entity }
+        format.json do
+          render json: {
+                   errors: @article.errors
+                 },
+                 status: :unprocessable_entity
+        end
       end
     end
   end

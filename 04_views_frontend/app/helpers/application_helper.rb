@@ -4,10 +4,18 @@ module ApplicationHelper
     return unless object.errors.any?
 
     content_tag :div, class: "error-messages" do
-      content_tag(:h3, "#{pluralize(object.errors.count, 'error')} prohibited this from being saved:") +
-      content_tag(:ul) do
-        object.errors.full_messages.map { |msg| content_tag(:li, msg) }.join.html_safe
-      end
+      content_tag(
+        :h3,
+        "#{pluralize(object.errors.count, "error")} prohibited this from being saved:"
+      ) +
+        content_tag(:ul) do
+          object
+            .errors
+            .full_messages
+            .map { |msg| content_tag(:li, msg) }
+            .join
+            .html_safe
+        end
     end
   end
 

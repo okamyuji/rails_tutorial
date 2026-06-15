@@ -1,5 +1,5 @@
 # Mark existing migrations as safe
-StrongMigrations.start_after = 20260615140959
+StrongMigrations.start_after = 20_260_615_140_959
 
 # Set timeouts for migrations
 StrongMigrations.lock_timeout = 10.seconds

@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  skip_forgery_protection
+  protect_from_forgery with: :null_session
 
   before_action :set_article, only: %i[index create]
   before_action :set_comment, only: %i[show update destroy]
@@ -34,7 +34,12 @@ class CommentsController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to @article, alert: "コメントの投稿に失敗しました" }
-        format.json { render json: { errors: @comment.errors }, status: :unprocessable_entity }
+        format.json do
+          render json: {
+                   errors: @comment.errors
+                 },
+                 status: :unprocessable_entity
+        end
       end
     end
   end
@@ -49,7 +54,12 @@ class CommentsController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to @comment.article, alert: "コメントの更新に失敗しました" }
-        format.json { render json: { errors: @comment.errors }, status: :unprocessable_entity }
+        format.json do
+          render json: {
+                   errors: @comment.errors
+                 },
+                 status: :unprocessable_entity
+        end
       end
     end
   end

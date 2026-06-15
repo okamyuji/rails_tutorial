@@ -25,9 +25,9 @@ module BlogApp
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.session_store :cookie_store,
-      key: "_blog_app_session",
-      secure: Rails.env.production?,
-      httponly: true,
-      same_site: :lax
+                         key: "_blog_app_session",
+                         secure: Rails.env.production?,
+                         httponly: true,
+                         same_site: :lax
   end
 end
