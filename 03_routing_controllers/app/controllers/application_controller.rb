@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   def record_not_found
     respond_to do |format|
-      format.html { render file: Rails.root.join("public/404.html"), status: :not_found, layout: false }
+      format.html { render file: "#{Rails.root}/public/404.html", status: :not_found, layout: false }
       format.json do
         render json: {
           errors: [{
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
 
   def record_invalid(exception)
     respond_to do |format|
-      format.html { render plain: exception.message, status: :unprocessable_entity }
+      format.html { render :new, status: :unprocessable_entity }
       format.json do
         render json: {
           errors: exception.record.errors.map do |error|

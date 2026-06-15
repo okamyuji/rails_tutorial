@@ -4,22 +4,32 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def show?
-    record.published? || owner? || admin?
+    true
   end
 
   def create?
-    logged_in?
+    user.present?
   end
 
   def update?
-    owner? || admin?
+    user.present? && (record.user == user || user.admin?)
   end
 
   def destroy?
-    owner? || admin?
+    user.present? && (record.user == user || user.admin?)
   end
 
   def publish?
-    owner? || admin?
+    update?
+  end
+
+  class Scope < Scope
+    def resolve
+      if user&.admin?
+        scope.all
+      else
+        scope.where(published: true)
+      end
+    end
   end
 end

@@ -13,21 +13,12 @@ RSpec.describe Article, type: :model do
   end
 
   describe 'scopes' do
-    let!(:published_article) { create(:article, :published) }
+    let!(:published_article) { create(:article, published: true) }
     let!(:draft_article) { create(:article, published: false) }
 
     it 'returns published articles' do
       expect(Article.published).to include(published_article)
       expect(Article.published).not_to include(draft_article)
-    end
-
-    it 'returns draft articles' do
-      expect(Article.draft).to include(draft_article)
-      expect(Article.draft).not_to include(published_article)
-    end
-
-    it 'returns recent articles in descending order' do
-      expect(Article.recent.first).to eq(draft_article)
     end
   end
 

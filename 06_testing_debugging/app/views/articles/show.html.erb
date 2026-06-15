@@ -33,7 +33,7 @@
 <% @article.comments.includes(:user).order(created_at: :desc).each do |comment| %>
   <div class="comment">
     <p><strong><%= comment.user.name %></strong> - <%= comment.created_at.strftime('%Y-%m-%d %H:%M') %></p>
-    <p><%= comment.body %></p>
+    <p><%= comment.content %></p>
   </div>
 <% end %>
 
@@ -41,8 +41,8 @@
   <h3>コメントを投稿</h3>
   <%= form_with model: [@article, Comment.new] do |f| %>
     <div>
-      <%= f.label :body, "コメント" %>
-      <%= f.text_area :body, rows: 3 %>
+      <%= f.label :content, "コメント" %>
+      <%= f.text_area :content, rows: 3 %>
     </div>
     <%= f.submit "投稿" %>
   <% end %>

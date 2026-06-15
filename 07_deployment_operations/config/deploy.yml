@@ -1,8 +1,8 @@
 # Name of your application. Used to uniquely configure containers.
-service: blog_app
+service: myapp
 
 # Name of the container image (use your-user/app-name on external registries).
-image: your-dockerhub-username/blog_app
+image: your-dockerhub-username/myapp
 
 # Deploy to these servers.
 servers:
@@ -46,7 +46,7 @@ aliases:
 
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 volumes:
-  - "blog_app_storage:/rails/storage"
+  - "myapp_storage:/rails/storage"
 
 # Bridge fingerprinted assets between versions to avoid 404 on in-flight requests.
 asset_path: /rails/public/assets

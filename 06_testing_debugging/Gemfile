@@ -93,6 +93,9 @@ group :test do
   # One-liner matchers for common Rails patterns
   gem "shoulda-matchers"
 
+  # Pundit policy matchers for RSpec
+  gem "pundit-matchers"
+
   # Code coverage
   gem "simplecov", require: false
 end

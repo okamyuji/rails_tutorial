@@ -61,6 +61,10 @@ group :development, :test do
   gem "syntax_tree", require: false
   gem "erb_lint", require: false
 
+  # Type checking
+  gem "sorbet-static-and-runtime", require: false
+  gem "tapioca", require: false
+
   # Security
   gem "brakeman", require: false
   gem "bundler-audit", require: false

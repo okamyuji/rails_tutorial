@@ -2,7 +2,7 @@
 
 <% @comments.each do |comment| %>
   <div>
-    <p><%= comment.body %></p>
+    <p><%= comment.content %></p>
     <small><%= comment.created_at.strftime("%Y-%m-%d %H:%M") %></small>
     <%= link_to "詳細", comment_path(comment) %>
   </div>

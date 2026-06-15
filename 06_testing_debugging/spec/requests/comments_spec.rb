@@ -9,24 +9,24 @@ RSpec.describe 'Comments', type: :request do
 
     it 'creates a comment' do
       expect {
-        post article_comments_path(article), params: { comment: { body: 'Nice post!' } }
+        post article_comments_path(article), params: { comment: { content: 'Nice post!' } }
       }.to change(Comment, :count).by(1)
     end
 
     it 'redirects to the article' do
-      post article_comments_path(article), params: { comment: { body: 'Nice post!' } }
+      post article_comments_path(article), params: { comment: { content: 'Nice post!' } }
       expect(response).to redirect_to(article_path(article))
     end
 
     it 'sets current_user as commenter' do
-      post article_comments_path(article), params: { comment: { body: 'Nice post!' } }
+      post article_comments_path(article), params: { comment: { content: 'Nice post!' } }
       expect(Comment.last.user).to eq(user)
     end
   end
 
   describe 'POST /articles/:article_id/comments (unauthenticated)' do
     it 'redirects to sign in' do
-      post article_comments_path(article), params: { comment: { body: 'Nice!' } }
+      post article_comments_path(article), params: { comment: { content: 'Nice!' } }
       expect(response).to redirect_to(new_user_session_path)
     end
   end
