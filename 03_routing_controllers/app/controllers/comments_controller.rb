@@ -1,6 +1,4 @@
 class CommentsController < ApplicationController
-  protect_from_forgery with: :null_session
-
   before_action :set_article, only: %i[index create]
   before_action :set_comment, only: %i[show update destroy]
 
