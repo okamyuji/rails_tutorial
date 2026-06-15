@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_15_140914) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_15_144616) do
   create_table "articles", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -40,6 +40,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_140914) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "images", force: :cascade do |t|
+    t.integer "article_id", null: false
+    t.string "caption"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["article_id"], name: "index_images_on_article_id"
+  end
+
   create_table "memberships", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "group_id", null: false
@@ -63,6 +72,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_15_140914) do
   add_foreign_key "articles", "users"
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "users"
+  add_foreign_key "images", "articles"
   add_foreign_key "memberships", "groups"
   add_foreign_key "memberships", "users"
 end
