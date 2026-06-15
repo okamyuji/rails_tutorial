@@ -1,0 +1,22 @@
+<%= error_messages_for(article) %>
+
+<%= form_with model: article do |f| %>
+  <div class="field <%= field_error_class(article, :title) %>">
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+    <%= field_error_message(article, :title) %>
+  </div>
+
+  <div class="field <%= field_error_class(article, :content) %>">
+    <%= f.label :content %>
+    <%= f.text_area :content, rows: 10 %>
+    <%= field_error_message(article, :content) %>
+  </div>
+
+  <div class="field">
+    <%= f.check_box :published %>
+    <%= f.label :published, "Publish now" %>
+  </div>
+
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>

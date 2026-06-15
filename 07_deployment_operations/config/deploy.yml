@@ -1,0 +1,56 @@
+# Name of your application. Used to uniquely configure containers.
+service: blog_app
+
+# Name of the container image (use your-user/app-name on external registries).
+image: your-dockerhub-username/blog_app
+
+# Deploy to these servers.
+servers:
+  web:
+    hosts:
+      - 192.168.0.1
+  # job:
+  #   hosts:
+  #     - 192.168.0.1
+  #   cmd: bin/jobs
+
+# kamal-proxy settings: healthcheck and SSL
+proxy:
+  healthcheck:
+    path: /up
+    interval: 3
+  ssl: true
+  host: app.example.com
+
+# Where you keep your container images.
+registry:
+  username: your-dockerhub-username
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  clear:
+    RAILS_LOG_TO_STDOUT: true
+    SOLID_QUEUE_IN_PUMA: true
+  secret:
+    - RAILS_MASTER_KEY
+    - SECRET_KEY_BASE
+
+# Aliases are triggered with "bin/kamal <alias>".
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
+
+# Use a persistent storage volume for sqlite database files and local Active Storage files.
+volumes:
+  - "blog_app_storage:/rails/storage"
+
+# Bridge fingerprinted assets between versions to avoid 404 on in-flight requests.
+asset_path: /rails/public/assets
+
+# Configure the image builder.
+builder:
+  arch: amd64

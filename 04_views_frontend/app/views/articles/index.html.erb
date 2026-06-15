@@ -1,0 +1,9 @@
+<h1>Articles</h1>
+
+<%= form_with url: articles_path, method: :get, data: { controller: "autosubmit" } do |f| %>
+  <%= f.text_field :q, value: params[:q], placeholder: "Search articles...", data: { action: "input->autosubmit#submit" } %>
+<% end %>
+
+<%= turbo_frame_tag "articles" do %>
+  <%= render @articles %>
+<% end %>

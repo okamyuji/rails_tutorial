@@ -1,0 +1,19 @@
+<h1>記事一覧</h1>
+
+<p><%= link_to "新規記事", new_article_path %></p>
+
+<% @articles.each do |article| %>
+  <article style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+    <h2><%= link_to article.title, article %></h2>
+    <p style="color: #6c757d; font-size: 0.875rem;">
+      by <%= article.user&.name || "不明" %>
+      &mdash; <%= l(article.created_at, format: :short) rescue article.created_at.strftime("%Y-%m-%d") %>
+      <% if article.published? %>
+        <span style="color: #28a745;">[公開]</span>
+      <% else %>
+        <span style="color: #dc3545;">[下書き]</span>
+      <% end %>
+    </p>
+    <p><%= truncate(article.content, length: 200) %></p>
+  </article>
+<% end %>

@@ -1,0 +1,11 @@
+<div class="article" id="<%= dom_id(article) %>">
+  <h2><%= link_to article.title, article %></h2>
+  <p class="author">by <%= article.user.name %></p>
+  <div class="content">
+    <%= truncate(article.content, length: 200) %>
+  </div>
+  <div class="meta">
+    <span><%= article.created_at.strftime('%Y-%m-%d') %></span>
+    <span><%= article.comments.size %> comments</span>
+  </div>
+</div>

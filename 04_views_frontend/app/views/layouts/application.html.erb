@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= content_for?(:title) ? yield(:title) : "My App" %></title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+<body>
+  <%= render "shared/header" %>
+
+  <main class="container">
+    <%= render "shared/flash" if flash.any? %>
+    <%= yield %>
+  </main>
+
+  <%= render "shared/footer" %>
+</body>
+</html>

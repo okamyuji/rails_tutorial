@@ -1,189 +1,109 @@
-# 第3章：RESTfulなルーティングとコントローラ設計 - 実装
+# 第3章: RESTfulなルーティングとコントローラ設計
 
-この章では、RESTfulなルーティングとコントローラの設計を実際に実装します。
+第2章のActiveRecordモデルをベースに、RESTfulルーティングとコントローラを実装したサンプルアプリです。
 
-## 前提条件
-
-- Ruby 3.2以上
-- Rails 8.0以上
-- 第2章で学んだActiveRecordの知識
-
-## 実装の進め方
-
-### 1. Railsプロジェクトの作成
+## セットアップ
 
 ```bash
-cd rails_tutorial/03_routing_controllers
-rails new api_app --api --database=postgresql --skip-test
-cd api_app
+cd 03_routing_controllers
+bundle install
+bin/rails db:prepare
+bin/rails db:seed
 ```
 
-`--api`オプションを使用して、API専用のRailsアプリケーションを作成します。
-
-### 2. データベースの作成
+## 起動
 
 ```bash
-cd api_app
-rails db:create
+bin/rails server
 ```
 
-### 3. モデルの作成
+ブラウザで http://localhost:3000 を開くと記事一覧が表示されます。
 
-```bash
-# ユーザーモデル
-rails generate model User name:string email:string
-
-# 記事モデル
-rails generate model Article title:string content:text published:boolean user:references
-
-# コメントモデル
-rails generate model Comment content:text user:references article:references
-
-# マイグレーションを実行
-rails db:migrate
-```
-
-### 4. コントローラの生成
-
-```bash
-rails generate controller Api::V1::Articles
-rails generate controller Api::V1::Comments
-rails generate controller Api::V1::Users
-```
-
-API用のコントローラを`Api::V1`名前空間で作成します。バージョニングにより、後方互換性を保ちながらAPIを進化させることができます。
-
-### 5. ルーティングの設定
-
-`config/routes.rb`を編集して、RESTfulなルーティングを設定します。提供されているサンプルファイルを参照してください。
-
-### 5.5 セキュリティチェックの自動化
-
-マスアサインメント脆弱性、CSRF漏れ、安全でないリダイレクトなどは、`brakeman` gemで静的に検出できます。レビュー時の見落としを防ぐため、CIに組み込みます。
-
-```bash
-bundle add brakeman --group development,test
-bundle exec brakeman --no-pager --exit-on-warn
-```
-
-CIへの統合は[第7章のCI設定](../07_deployment_operations/github_actions/ci.yml)に含まれています。pre-commitで同じチェックをローカル実行することもできます（[`pre-commit-config.yaml`](../07_deployment_operations/github_actions/pre-commit-config.yaml)）。
-
-### 6. デモスクリプトの実行
-
-このディレクトリには、ルーティングとコントローラの機能を確認するためのスクリプトが用意されています。
-
-#### routes_demo.rb - ルーティングの確認
-
-```bash
-cd api_app
-rails runner ../routes_demo.rb
-```
-
-このスクリプトは、定義されているルートを一覧表示し、RESTfulなルーティングの構造を確認できます。
-
-#### strong_parameters_demo.rb - Strong Parametersのデモ
-
-```bash
-cd api_app
-rails runner ../strong_parameters_demo.rb
-```
-
-このスクリプトは、Strong Parametersによるパラメータフィルタリングの動作を確認します。
-
-#### error_handling_demo.rb - エラーハンドリングのデモ
-
-```bash
-cd api_app
-rails runner ../error_handling_demo.rb
-```
-
-このスクリプトは、様々なエラーケースとそのハンドリング方法を実演します。
-
-### 7. APIのテスト（curl）
-
-サーバを起動して、curlコマンドでAPIをテストできます。
-
-```bash
-# サーバを起動
-rails server
-
-# 別のターミナルで以下を実行
-
-# ユーザーの作成
-curl -X POST http://localhost:3000/api/v1/users \
-  -H "Content-Type: application/json" \
-  -d '{"user": {"name": "Alice", "email": "alice@example.com"}}'
-
-# ユーザー一覧の取得
-curl http://localhost:3000/api/v1/users
-
-# 特定のユーザーの取得
-curl http://localhost:3000/api/v1/users/1
-
-# ユーザーの更新
-curl -X PATCH http://localhost:3000/api/v1/users/1 \
-  -H "Content-Type: application/json" \
-  -d '{"user": {"name": "Alice Updated"}}'
-
-# ユーザーの削除
-curl -X DELETE http://localhost:3000/api/v1/users/1
-```
-
-### 8. Railsコンソールで試す
-
-```bash
-cd api_app
-rails console
-```
-
-コンソール内で以下のようなコードを実行できます。
+## ルーティング構成
 
 ```ruby
-# ルートの確認
-Rails.application.routes.routes.map { |r| r.path.spec.to_s }
-
-# 特定のルートの検索
-Rails.application.routes.recognize_path('/api/v1/articles', method: :get)
-
-# URLヘルパーの使用
-app.api_v1_articles_path
-app.api_v1_article_path(1)
-
-# 終了
-exit
+resources :articles do
+  resources :comments, shallow: true
+end
 ```
 
-## 提供されているファイル
+`bin/rails routes`で生成されるルートの一部を示します。
 
-### ルーティング設定
+```text
+GET    /articles                         articles#index
+POST   /articles                         articles#create
+GET    /articles/:id                     articles#show
+PATCH  /articles/:id                     articles#update
+DELETE /articles/:id                     articles#destroy
+GET    /articles/:article_id/comments    comments#index
+POST   /articles/:article_id/comments    comments#create
+GET    /comments/:id                     comments#show
+PATCH  /comments/:id                     comments#update
+DELETE /comments/:id                     comments#destroy
+```
 
-- `routes/routes_basic.rb` - 基本的なresourcesルーティング
-- `routes/routes_nested.rb` - ネストしたルーティング
-- `routes/routes_custom.rb` - カスタムアクションの追加
+`shallow: true`により、コメントの一覧と作成は記事配下にネストされ、個別操作はコメントIDだけで完結します。
 
-### コントローラ
+## コントローラの設計方針
 
-- `controllers/api/v1/articles_controller.rb` - 記事APIコントローラ
-- `controllers/api/v1/comments_controller.rb` - コメントAPIコントローラ
-- `controllers/api/v1/users_controller.rb` - ユーザーAPIコントローラ
-- `controllers/concerns/error_handler.rb` - エラーハンドリングの共通処理
+`ApplicationController`で共通のエラーハンドリングを定義しています。
 
-### デモスクリプト
+- `ActiveRecord::RecordNotFound` -> 404
+- `ActionController::ParameterMissing` -> 400
+- `ActiveRecord::RecordInvalid` -> 422
 
-- `routes_demo.rb` - ルーティングの確認
-- `strong_parameters_demo.rb` - Strong Parametersのデモ
-- `error_handling_demo.rb` - エラーハンドリングのデモ
-- `api_test.sh` - curlを使用したAPIテストスクリプト
+`respond_to`によりHTMLとJSONの両方に対応するフルスタックMVC構成です。
 
-## まとめ
+HTMLフォームでは`save` + if/elseでエラー時にフォームを再描画します。JSON APIでは`save!` + `rescue_from`でエラーハンドリングを集約できます。
 
-この実装を通じて、以下の点を確認しました。
+## curlによる動作確認
 
-- RESTfulなルーティングの設計
-- resourcesとネストしたルーティング
-- カスタムアクションの追加
-- Strong Parametersによる入力制御
-- 例外処理とエラーレスポンス
-- APIバージョニング
+```bash
+# 記事一覧(JSON)
+curl -s -H "Accept: application/json" http://localhost:3000/articles
 
-次章では、ビューの構造化とフロントエンド統合に進みます。
+# 記事作成
+curl -s -X POST http://localhost:3000/articles \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"article":{"title":"Hello Rails","content":"これはテスト記事です。動作確認用。","user_id":1}}'
+
+# 記事詳細
+curl -s -H "Accept: application/json" http://localhost:3000/articles/1
+
+# 記事更新
+curl -s -X PATCH http://localhost:3000/articles/1 \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"article":{"title":"Updated Title"}}'
+
+# 記事削除
+curl -s -X DELETE -H "Accept: application/json" http://localhost:3000/articles/1
+
+# コメント一覧
+curl -s -H "Accept: application/json" http://localhost:3000/articles/1/comments
+
+# コメント作成
+curl -s -X POST http://localhost:3000/articles/1/comments \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"comment":{"body":"テストコメントです。","user_id":1}}'
+```
+
+`skip_forgery_protection`を開発環境の動作確認用に設定しています。本番環境では`protect_from_forgery with: :null_session`に置き換えてください。
+
+## 含まれるモデル
+
+| モデル | 説明 |
+|--------|------|
+| User | ユーザー。記事とコメントの作成者 |
+| Article | 記事。公開/下書き管理、スコープ、検索メソッドを実装 |
+| Comment | コメント。ユーザーと記事に紐づく |
+| Group | グループ。Membershipを介したユーザーとの多対多関連 |
+| Membership | 中間テーブル。enum :roleでメンバー/モデレーター/管理者を管理 |
+
+## Ruby / Railsバージョン
+
+- Ruby 3.4.8
+- Rails 8.1.3
+- SQLite3

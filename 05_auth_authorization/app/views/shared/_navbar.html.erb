@@ -1,0 +1,16 @@
+<nav style="background: #333; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;">
+  <div>
+    <%= link_to "Blog App", root_path, style: "color: #fff; text-decoration: none; font-weight: bold; font-size: 18px;" %>
+    <%= link_to "記事一覧", articles_path, style: "color: #ccc; text-decoration: none; margin-left: 20px;" %>
+  </div>
+  <div>
+    <% if user_signed_in? %>
+      <span style="color: #ccc;"><%= current_user.name %> (<%= current_user.role %>)</span>
+      <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
+            style: "background: none; border: 1px solid #ccc; color: #ccc; padding: 4px 12px; cursor: pointer; margin-left: 10px;" %>
+    <% else %>
+      <%= link_to "ログイン", new_user_session_path, style: "color: #ccc; text-decoration: none;" %>
+      <%= link_to "新規登録", new_user_registration_path, style: "color: #ccc; text-decoration: none; margin-left: 10px;" %>
+    <% end %>
+  </div>
+</nav>

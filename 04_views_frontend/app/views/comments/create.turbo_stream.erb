@@ -1,0 +1,7 @@
+<%= turbo_stream.prepend "comments" do %>
+  <div class="comment" id="<%= dom_id(@comment) %>">
+    <p class="comment-author"><%= @comment.user.name %></p>
+    <p class="comment-body"><%= @comment.body %></p>
+    <span class="comment-date"><%= @comment.created_at.strftime('%Y-%m-%d %H:%M') %></span>
+  </div>
+<% end %>

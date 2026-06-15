@@ -1,0 +1,7 @@
+<h1>コメント詳細</h1>
+<p><%= @comment.body %></p>
+<small><%= @comment.created_at.strftime("%Y-%m-%d %H:%M") %></small>
+
+<p>
+  <%= link_to "記事に戻る", article_path(@comment.article) %>
+</p>

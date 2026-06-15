@@ -1,0 +1,49 @@
+<h1><%= @article.title %></h1>
+
+<p class="meta">
+  by <%= @article.user.name %> |
+  <%= @article.created_at.strftime('%Y-%m-%d %H:%M') %>
+  <% if @article.published? %>
+    | <span class="badge">公開済み</span>
+  <% else %>
+    | <span class="badge">下書き</span>
+  <% end %>
+</p>
+
+<div class="content">
+  <%= simple_format(@article.content) %>
+</div>
+
+<div class="actions">
+  <% if user_signed_in? && (current_user == @article.user || current_user.admin?) %>
+    <%= link_to "編集", edit_article_path(@article) %>
+    <%= button_to "削除", article_path(@article), method: :delete,
+                  form: { data: { turbo_confirm: "本当に削除しますか？" } } %>
+    <% unless @article.published? %>
+      <%= button_to "公開する", publish_article_path(@article), method: :patch %>
+    <% end %>
+  <% end %>
+  <%= link_to "一覧に戻る", articles_path %>
+</div>
+
+<hr>
+
+<h2>コメント (<%= @article.comments.count %>)</h2>
+
+<% @article.comments.includes(:user).order(created_at: :desc).each do |comment| %>
+  <div class="comment">
+    <p><strong><%= comment.user.name %></strong> - <%= comment.created_at.strftime('%Y-%m-%d %H:%M') %></p>
+    <p><%= comment.body %></p>
+  </div>
+<% end %>
+
+<% if user_signed_in? %>
+  <h3>コメントを投稿</h3>
+  <%= form_with model: [@article, Comment.new] do |f| %>
+    <div>
+      <%= f.label :body, "コメント" %>
+      <%= f.text_area :body, rows: 3 %>
+    </div>
+    <%= f.submit "投稿" %>
+  <% end %>
+<% end %>

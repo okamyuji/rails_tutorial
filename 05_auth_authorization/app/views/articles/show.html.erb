@@ -1,0 +1,22 @@
+<h1><%= @article.title %></h1>
+<p style="color: #666;">by <%= @article.user.name %> | <%= @article.created_at.strftime("%Y-%m-%d %H:%M") %></p>
+
+<% if !@article.published? %>
+  <span style="background: #ffc107; padding: 2px 8px; border-radius: 3px; font-size: 12px;">下書き</span>
+<% end %>
+
+<div style="margin-top: 20px; line-height: 1.8;">
+  <%= simple_format(@article.content) %>
+</div>
+
+<div style="margin-top: 30px;">
+  <% if policy(@article).edit? %>
+    <%= link_to "編集", edit_article_path(@article) %> |
+  <% end %>
+  <% if policy(@article).destroy? %>
+    <%= button_to "削除", article_path(@article), method: :delete,
+          data: { turbo_confirm: "本当に削除しますか？" },
+          style: "background: #dc3545; color: #fff; border: none; padding: 4px 12px; cursor: pointer; border-radius: 3px;" %>
+  <% end %>
+  <%= link_to "一覧に戻る", articles_path %>
+</div>

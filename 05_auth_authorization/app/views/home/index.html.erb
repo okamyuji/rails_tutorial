@@ -1,0 +1,17 @@
+<h1>Blog App</h1>
+<p>Devise + Punditによる認証・認可のデモアプリです。</p>
+
+<h2>最新の公開記事</h2>
+<% if @articles.any? %>
+  <% @articles.each do |article| %>
+    <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 4px;">
+      <h3><%= link_to article.title, article_path(article) %></h3>
+      <p style="color: #666;">by <%= article.user.name %> | <%= l(article.created_at, format: :short) rescue article.created_at.strftime("%Y-%m-%d") %></p>
+      <p><%= truncate(article.content, length: 200) %></p>
+    </div>
+  <% end %>
+<% else %>
+  <p>まだ記事がありません。</p>
+<% end %>
+
+<%= link_to "すべての記事を見る", articles_path %>

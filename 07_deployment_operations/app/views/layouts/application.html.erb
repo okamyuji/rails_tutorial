@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Blog App" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Blog App">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <header style="padding: 1rem; background: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+      <nav>
+        <%= link_to "Blog App", root_path, style: "font-weight: bold; text-decoration: none; color: #333;" %>
+      </nav>
+    </header>
+
+    <main style="max-width: 800px; margin: 0 auto; padding: 1rem;">
+      <% if notice.present? %>
+        <p style="padding: 0.75rem; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; color: #155724;">
+          <%= notice %>
+        </p>
+      <% end %>
+
+      <% if alert.present? %>
+        <p style="padding: 0.75rem; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+          <%= alert %>
+        </p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer style="padding: 1rem; text-align: center; color: #6c757d; border-top: 1px solid #dee2e6; margin-top: 2rem;">
+      <small>Blog App &mdash; Rails Tutorial Chapter 7</small>
+    </footer>
+  </body>
+</html>

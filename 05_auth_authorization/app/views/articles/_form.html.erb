@@ -1,0 +1,31 @@
+<%= form_with(model: article) do |form| %>
+  <% if article.errors.any? %>
+    <div style="background: #f8d7da; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+      <h3><%= pluralize(article.errors.count, "error") %> がありました:</h3>
+      <ul>
+        <% article.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :title, "タイトル" %><br>
+    <%= form.text_field :title, style: "width: 100%; padding: 8px; box-sizing: border-box;" %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.label :content, "本文" %><br>
+    <%= form.text_area :content, rows: 10, style: "width: 100%; padding: 8px; box-sizing: border-box;" %>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <%= form.check_box :published %>
+    <%= form.label :published, "公開する" %>
+  </div>
+
+  <div>
+    <%= form.submit style: "background: #007bff; color: #fff; border: none; padding: 8px 20px; cursor: pointer; border-radius: 3px;" %>
+  </div>
+<% end %>

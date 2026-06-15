@@ -1,0 +1,16 @@
+<h1>記事一覧</h1>
+
+<% if user_signed_in? && policy(Article).create? %>
+  <p><%= link_to "新しい記事を作成", new_article_path %></p>
+<% end %>
+
+<% @articles.each do |article| %>
+  <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 4px;">
+    <h2><%= link_to article.title, article_path(article) %></h2>
+    <p style="color: #666;">by <%= article.user.name %> | <%= article.created_at.strftime("%Y-%m-%d") %></p>
+    <p><%= truncate(article.content, length: 200) %></p>
+    <% if !article.published? %>
+      <span style="background: #ffc107; padding: 2px 8px; border-radius: 3px; font-size: 12px;">下書き</span>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,32 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.0
+    hooks:
+      - id: gitleaks
+
+  - repo: local
+    hooks:
+      - id: rubocop
+        name: rubocop
+        entry: bundle exec rubocop --force-exclusion --parallel
+        language: system
+        types: [ruby]
+
+      - id: stree
+        name: stree
+        entry: bundle exec stree check
+        language: system
+        types: [ruby]
+
+      - id: erblint
+        name: erb-lint
+        entry: bundle exec erblint
+        language: system
+        files: \.html\.erb$
+
+      - id: brakeman
+        name: brakeman
+        entry: bundle exec brakeman --quiet --exit-on-warn
+        language: system
+        pass_filenames: false
+        types: [ruby]

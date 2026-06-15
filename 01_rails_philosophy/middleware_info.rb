@@ -17,10 +17,10 @@ puts ""
 
 # 各ミドルウェアを順番に表示
 middlewares.each_with_index do |middleware, index|
-  puts "#{index + 1}. #{middleware}"
+  puts "#{index + 1}. #{middleware.name}"
 
   # 主要なミドルウェアの説明を追加
-  case middleware.to_s
+  case middleware.name
   when /Rack::Sendfile/
     puts "   → 静的ファイルの配信を効率化します"
   when /ActionDispatch::Static/
