@@ -14,3 +14,7 @@ AllCops:
     - "db/schema.rb"
     - "vendor/**/*"
     - "node_modules/**/*"
+
+# Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
