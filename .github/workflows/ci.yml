@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  rails:
+    strategy:
+      fail-fast: false
+      matrix:
+        chapter:
+          - 01_rails_philosophy
+          - 02_activerecord
+          - 03_routing_controllers
+          - 04_views_frontend
+          - 05_auth_authorization
+          - 06_testing_debugging
+          - 07_deployment_operations
+        include:
+          - chapter: 06_testing_debugging
+            test-command: bin/rails db:test:prepare test && bundle exec rspec
+    # rails-ci の lockfile-recreate ジョブが宣言する権限を与えないと、実行されない場合でも
+    # ワークフロー全体が起動時に失敗する。コードを実行する各ジョブは rails-ci 側で contents: read に下げている
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: okamyuji/reusable-workflows/.github/workflows/rails-ci.yml@v1
+    with:
+      working-directory: ${{ matrix.chapter }}
+      test-command: ${{ matrix.test-command || 'bin/rails db:test:prepare test' }}
+  security:
+    uses: okamyuji/reusable-workflows/.github/workflows/security-scan.yml@v1
