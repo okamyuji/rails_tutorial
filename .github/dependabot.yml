@@ -1,0 +1,21 @@
+# 公開から3日未満の版は提案しない（pnpm の minimumReleaseAge と同じ待機）。minor と patch は major と別の PR にまとめ、major で CI が落ちても残りを取り込めるようにする
+version: 2
+updates:
+  - package-ecosystem: bundler
+    directories:
+      - "/01_rails_philosophy"
+      - "/02_activerecord"
+      - "/03_routing_controllers"
+      - "/04_views_frontend"
+      - "/05_auth_authorization"
+      - "/06_testing_debugging"
+      - "/07_deployment_operations"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 3
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+      major:
+        update-types: [major]
