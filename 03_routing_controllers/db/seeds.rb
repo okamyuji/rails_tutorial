@@ -11,7 +11,7 @@ end
   2.times do |j|
     Comment.find_or_create_by!(
       article: article,
-      body: "記事#{i + 1}へのコメント#{j + 1}です。"
+      content: "記事#{i + 1}へのコメント#{j + 1}です。"
     ) do |c|
       c.user = user
     end
