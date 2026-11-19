@@ -66,6 +66,6 @@ bin/rails server
 
 ## Ruby / Rails バージョン
 
-- Ruby 3.4.11
+- Ruby 4.0.10
 - Rails 8.1.3
 - SQLite3

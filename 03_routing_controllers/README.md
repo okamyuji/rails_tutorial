@@ -104,6 +104,6 @@ curl -s -X POST http://localhost:3000/articles/1/comments \
 
 ## Ruby / Railsバージョン
 
-- Ruby 3.4.11
+- Ruby 4.0.10
 - Rails 8.1.3
 - SQLite3
